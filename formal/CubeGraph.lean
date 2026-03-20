@@ -102,3 +102,4 @@ import CubeGraph.AC0FregeLowerBound
 import CubeGraph.EFLowerBound
 import CubeGraph.DepthFregeLowerBound
 import CubeGraph.FregeLowerBound
+import CubeGraph.PolynomialReduction
