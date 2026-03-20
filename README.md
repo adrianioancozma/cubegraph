@@ -42,6 +42,18 @@ A 3-SAT clause over variables {A, B, C} corresponds to a vertex of the cube {0,1
 5. **C_local** — boolean composition barrier (6 components)
 6. **Rank-1 protocols** — blind below Borromean order Θ(n)
 
+### What is NOT proven
+
+This formalization does **not** prove P ≠ NP. Specifically:
+
+- **Extended Resolution lower bound**: OPEN. ER definitions on the extended CubeGraph might reduce Borromean order through derived clauses. The definitions themselves are harmless (1 filled vertex / 7 gaps → always extendable), but derived clauses using auxiliary variables could create new inconsistencies. This is the gap.
+- **Frege / Extended Frege lower bounds**: OPEN (50+ years for the entire field).
+- **General circuit lower bounds**: Only monotone circuits are covered (SIZE ≥ n^{Ω(n)}). Non-monotone circuits are not addressed.
+- **DPLL/CDCL explicit lower bound**: Implied by Resolution width (via ABD+BSW) but not formalized as a separate theorem with the Chvátal-Szemerédi axiom.
+- **Treewidth = Θ(n) formal**: Experimentally confirmed (tw = 3.07n, R² = 0.9999) but not formalized as axiom.
+
+The gap between "6 algorithm classes eliminated" and "P ≠ NP" is precisely the Extended Resolution question: can auxiliary variables compress Borromean information from 8^{Θ(n)} to poly(n)?
+
 ### External Axioms (11 total)
 
 All are published theorems from the complexity theory literature:
