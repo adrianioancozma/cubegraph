@@ -31,7 +31,7 @@ A 3-SAT clause over variables {A, B, C} corresponds to a vertex of the cube {0,1
 - `fixed_point_gap_summary` — P = Knaster-Tarski on trees, NP = fixed point missing on cycles
 - `symmetry_and_its_breaking` — Z₂³ symmetry broken irreversibly by OR (1+1=1)
 
-**Proof complexity lower bounds (NEW):**
+**Proof complexity lower bounds:**
 - `er_resolution_lower_bound` — Extended Resolution size ≥ 2^{Ω(n)}
 - `pc_lower_bound` — Polynomial Calculus size ≥ 2^{Ω(n)}
 - `cp_lower_bound` — Cutting Planes size ≥ 2^{Ω(n)}
