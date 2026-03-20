@@ -38,7 +38,7 @@ A 3-SAT clause over variables {A, B, C} corresponds to a vertex of the cube {0,1
 - `ac0frege_lower_bound` — AC⁰-Frege size ≥ 2^{Ω(n)} at any fixed depth
 - `ef_resolution_lower_bound` — Generalized ER (any abbreviation type via HasCorrectGaps)
 - `depth_frege_lower_bound` — Depth-sensitive Frege: super-polynomial for d = o(log n / log log n)
-- `frege_near_quadratic` — **Frege general (unbounded depth) size ≥ Ω(n²/log n)** — first super-linear
+- `frege_near_quadratic` — Frege general (unbounded depth) self-referential bound via CubeGraph (matches known Ω(n²) from literature)
 
 **Other lower bounds:**
 - `monotone_size_exponential` — monotone circuit SIZE ≥ n^{Ω(n)}
@@ -68,13 +68,13 @@ A 3-SAT clause over variables {A, B, C} corresponds to a vertex of the cube {0,1
 | 12 | AC⁰-Frege + ER | 2^{n^{Ω(1/d)}} | AC0FregeLowerBound |
 | 13 | Generalized ER (any abbreviation) | 2^{Ω(n)} | EFLowerBound |
 | 14 | Depth-sensitive Frege | super-poly for d = o(log n) | DepthFregeLowerBound |
-| 15 | **Frege (unbounded depth)** | **Ω(n²/log n)** | **FregeLowerBound** |
+| 15 | Frege (unbounded depth) | Ω(n²/log n) via CubeGraph | FregeLowerBound |
 
 ### What is NOT proven
 
 This formalization does **not** prove P ≠ NP. Specifically:
 
-- **Frege lower bound**: **Ω(n²/log n)** — first super-linear, but still polynomial. The barrier: BSW width-size theorem has formula size N in the denominator. Tseitin encoding adds O(S) variables → S appears in denominator → bound self-limits to ~n². For P ≠ NP: would need 2^{Ω(n)}.
+- **Frege lower bound**: Ω(n²/log n) via CubeGraph framework — matches the known Ω(n²) from proof complexity literature (no super-polynomial Frege lower bounds are known; this is a 50+ year open problem). The barrier: BSW width-size theorem has formula size N in the denominator. For P ≠ NP: would need 2^{Ω(n)}.
 - **Extended Frege**: Our generalized ER result (EFLowerBound) proves Resolution on any extension is hard. But EF uses Frege rules (not Resolution), and k-consistency does not imply Frege proof size bounds. The naming "EF" in the file is imprecise — it's Resolution-based.
 - **General circuit lower bounds**: Only monotone circuits are covered. Non-monotone circuits are not addressed.
 
