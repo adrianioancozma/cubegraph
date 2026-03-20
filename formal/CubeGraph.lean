@@ -83,3 +83,16 @@ import CubeGraph.RankWidthTransfer
 import CubeGraph.SublinearER
 import CubeGraph.SpreadingCompression
 import CubeGraph.BorromeanAC0
+import CubeGraph.InformationBottleneckComplete
+import CubeGraph.FixedPointGap
+import CubeGraph.SymmetryBreaking
+import CubeGraph.ERAuxiliaryBlind
+import CubeGraph.ERStructural
+import CubeGraph.BorromeanFullGraph
+import CubeGraph.ERExtendable
+import CubeGraph.ERBorromeanFull
+import CubeGraph.ERKConsistentBridge
+import CubeGraph.ERAggregateBricks
+import CubeGraph.ERKConsistentProof
+import CubeGraph.ERKConsistentInduction
+import CubeGraph.ERLowerBound

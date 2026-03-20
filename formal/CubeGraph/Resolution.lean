@@ -77,50 +77,26 @@ theorem depth_ge_width_principle :
     ∀ (π : ResProof), π.steps.length ≥ 1 → π.depth ≥ 1 := by
   intro π h; exact h
 
-/-! ## Section 3: BSW axiom on CubeGraph (Opțiunea A) -/
+/-! ## Section 3: DT ≥ Ω(n) from Schoenebeck -/
 
-/-- **BSW on CubeGraph**: Resolution width of random 3-SAT at ρ_c is Ω(n).
-    Alternative path to DT ≥ Ω(n), independent of Schoenebeck.
+/-- **DT ≥ Ω(n)**: Decision tree depth on CubeGraph at ρ_c is Ω(n).
 
-    Reference: Ben-Sasson, Wigderson (2001), Theorem 4.19. -/
-axiom bsw_on_cubegraph :
+    From Schoenebeck: SA at level n/c passes on large UNSAT CubeGraphs.
+    Any decision procedure examining < n/c cubes cannot distinguish SAT/UNSAT.
+
+    NOTE: bsw_on_cubegraph (BSW Resolution width) was previously an axiom here.
+    It was REDUNDANT with schoenebeck_linear (identical formal statement).
+    Removed to reduce axiom count. BSW gives an independent JUSTIFICATION
+    (Resolution width) but the same CONCLUSION (DT ≥ Ω(n)). -/
+theorem dt_lower_bound :
     ∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
-      ∃ G : CubeGraph,
-        G.cubes.length ≥ n ∧ ¬ G.Satisfiable ∧
-        (∀ (S : List (Fin G.cubes.length)), S.Nodup → S.length < n / c →
-          ∃ s : (i : Fin G.cubes.length) → Vertex,
-            (∀ i ∈ S, (G.cubes[i]).isGap (s i) = true) ∧
-            (∀ e ∈ G.edges, e.1 ∈ S → e.2 ∈ S →
-              transferOp (G.cubes[e.1]) (G.cubes[e.2])
-                (s e.1) (s e.2) = true))
-
-/-! ## Section 4: Two independent paths -/
-
-/-- **Two Paths to DT ≥ Ω(n)**: Schoenebeck (SA/SOS) and BSW (Resolution).
-
-    Path 1 (Schoenebeck): SA at level n/c passes on UNSAT → DT ≥ n/c
-    Path 2 (BSW): Resolution width ≥ n/c → depth ≥ n/c → DT ≥ n/c
-
-    Different mechanisms, same conclusion. -/
-theorem two_paths_to_dt :
-    -- Path 1: Schoenebeck
-    (∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable ∧
         ∀ (S : List (Fin G.cubes.length)), S.Nodup → S.length < n / c →
           ∃ s : (i : Fin G.cubes.length) → Vertex,
             (∀ i ∈ S, (G.cubes[i]).isGap (s i) = true) ∧
             (∀ e ∈ G.edges, e.1 ∈ S → e.2 ∈ S →
               transferOp (G.cubes[e.1]) (G.cubes[e.2])
-                (s e.1) (s e.2) = true))
-    -- Path 2: BSW
-    ∧ (∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
-        ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable ∧
-          ∀ (S : List (Fin G.cubes.length)), S.Nodup → S.length < n / c →
-            ∃ s : (i : Fin G.cubes.length) → Vertex,
-              (∀ i ∈ S, (G.cubes[i]).isGap (s i) = true) ∧
-              (∀ e ∈ G.edges, e.1 ∈ S → e.2 ∈ S →
-                transferOp (G.cubes[e.1]) (G.cubes[e.2])
-                  (s e.1) (s e.2) = true)) :=
-  ⟨decision_tree_depth_scaling, bsw_on_cubegraph⟩
+                (s e.1) (s e.2) = true) :=
+  decision_tree_depth_scaling
 
 end CubeGraph

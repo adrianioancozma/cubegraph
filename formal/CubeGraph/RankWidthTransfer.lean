@@ -166,7 +166,7 @@ theorem unification_chain :
     **Derivable** (now redundant):
     - KW: monotone depth = CC → follows from GPW + circuit simulation
     - BSW: width Ω(n) → follows from Schoenebeck + ABD+AD (this file!)
-    - bsw_on_cubegraph: same, on CubeGraph → follows from Schoenebeck + ABD+AD
+    - bsw_on_cubegraph: REMOVED (was redundant with schoenebeck_linear)
 
     **Lean-proven** (0 sorry, across all files):
     - Rank decay, rank-1 closed, list aggregation
