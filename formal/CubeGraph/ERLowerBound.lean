@@ -13,6 +13,11 @@
 
   Result:
   - er_resolution_lower_bound: ∃ UNSAT 3-SAT families where ER proofs ≥ 2^{Ω(n)}
+
+  See: PCLowerBound.lean (Polynomial Calculus lower bound, same pattern)
+  See: ERKConsistentInduction.lean (er_exponential_unconditional)
+  See: ERKConsistentProof.lean (er_kconsistent_from_aggregate, axiom #12 eliminated)
+  Plan: experiments-ml/025_2026-03-19_synthesis/bridge/D7-PLAN-INFORMATION-CAPACITY.md
 -/
 
 import CubeGraph.ERKConsistentInduction

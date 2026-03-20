@@ -63,7 +63,7 @@ theorem bit_consistency (G : CubeGraph) (S_orig : List (Fin G.cubes.length))
 /-! ## Section 3: bit value helpers -/
 
 /-- If two Nats have the same &&& 1 == 1 Bool, their &&& 1 values are equal. -/
-private theorem and1_eq_of_beq1_eq (x y : Nat)
+theorem and1_eq_of_beq1_eq (x y : Nat)
     (h : ((x &&& 1) == 1) = ((y &&& 1) == 1)) : (x &&& 1) = (y &&& 1) := by
   simp only [Nat.and_one_is_mod] at h ⊢
   have hx := Nat.mod_two_eq_zero_or_one x
@@ -71,7 +71,7 @@ private theorem and1_eq_of_beq1_eq (x y : Nat)
   rcases hx with hx | hx <;> rcases hy with hy | hy <;> simp_all
 
 /-- From (x &&& 1 == 1) = (y == 1) where y ≤ 1, conclude x &&& 1 = y. -/
-private theorem bit_val_eq (x y : Nat) (hy : y ≤ 1)
+theorem bit_val_eq (x y : Nat) (hy : y ≤ 1)
     (h : ((x &&& 1) == 1) = (y == 1)) : (x &&& 1) = y := by
   simp only [Nat.and_one_is_mod] at h ⊢
   have hx := Nat.mod_two_eq_zero_or_one x
@@ -95,7 +95,7 @@ theorem varAt_of_idxOf_eq (c : Cube) (sv : Nat) (pos : Fin 3)
     | ⟨2, _⟩ => simp_all [Cube.varAt])
 
 /-- (x &&& 1) ≤ 1. -/
-private theorem and1_le_one (x : Nat) : (x &&& 1) ≤ 1 := by
+theorem and1_le_one (x : Nat) : (x &&& 1) ≤ 1 := by
   simp only [Nat.and_one_is_mod]
   have := Nat.mod_two_eq_zero_or_one x; rcases this with h | h <;> simp [h]
 
@@ -113,14 +113,14 @@ theorem transferOp_self (c : Cube) (g : Vertex) (hg : c.isGap g = true) :
 
 /-! ## Section 5: list helpers -/
 
-private theorem filterMap_length_le {α β : Type} (f : α → Option β) (l : List α) :
+theorem filterMap_length_le {α β : Type} (f : α → Option β) (l : List α) :
     (l.filterMap f).length ≤ l.length := by
   induction l with
   | nil => simp
   | cons x t ih =>
     simp only [List.filterMap_cons]; cases f x <;> simp [List.length_cons] <;> omega
 
-private theorem filterMap_nodup_of_val_inj
+theorem filterMap_nodup_of_val_inj
     {n : Nat} (S : List (Fin n)) (hnd : S.Nodup) (m : Nat) (hle : m ≤ n) :
     (S.filterMap fun (i : Fin n) =>
       if h : i.val < m then some (⟨i.val, h⟩ : Fin m) else none).Nodup := by
@@ -153,7 +153,7 @@ private theorem filterMap_nodup_of_val_inj
           all_goals simp_all
         exact hnd.1 (this ▸ ha), ih hnd.2⟩
 
-private theorem mem_filterMap_proj {n : Nat}
+theorem mem_filterMap_proj {n : Nat}
     (S : List (Fin n)) (i : Fin n) (hi : i ∈ S) (m : Nat) (hlt : i.val < m) :
     (⟨i.val, hlt⟩ : Fin m) ∈ (S.filterMap fun (j : Fin n) =>
       if h : j.val < m then some (⟨j.val, h⟩ : Fin m) else none) := by
