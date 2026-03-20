@@ -1,0 +1,85 @@
+-- CubeGraph: Formal verification of the 3-CUBES framework for 3-SAT
+--
+-- This library formalizes:
+-- 1. Boolean matrices (BoolMat) forming a monoid under ⊗
+-- 2. Cubes (variable triplets with gap sets) and CubeGraphs
+-- 3. Transfer operators derived from gap compatibility
+-- 4. Core theorems: rank-0 → UNSAT, locality, cycle trace semantics
+
+import CubeGraph.BoolMat
+import CubeGraph.Basic
+import CubeGraph.GapLemmas
+import CubeGraph.Theorems
+import CubeGraph.PartB
+import CubeGraph.ChannelAlignment
+import CubeGraph.Topology
+import CubeGraph.TreeSAT
+import CubeGraph.RankTheory
+import CubeGraph.LeafTrimming
+import CubeGraph.CNF
+import CubeGraph.CycleDP
+import CubeGraph.Hierarchy
+import CubeGraph.Witness
+import CubeGraph.FormulaToGraph
+import CubeGraph.HierarchyTheorems
+import CubeGraph.GapSheaf
+import CubeGraph.Locality
+import CubeGraph.CycleIntersection
+import CubeGraph.Monodromy
+import CubeGraph.GapSheafCech
+import CubeGraph.MonodromyCycleOp
+import CubeGraph.Holonomy
+import CubeGraph.Rank1AC
+import CubeGraph.InvertibilityBarrier
+import CubeGraph.MUS
+import CubeGraph.FiberDichotomy
+import CubeGraph.TaylorBarrier
+import CubeGraph.TrivialSection
+import CubeGraph.HornBarrier
+import CubeGraph.DualHornBarrier
+import CubeGraph.FunctionalTransfer
+import CubeGraph.BarrierSummary
+import CubeGraph.MinimalBarrier
+import CubeGraph.ZeroDivisors
+import CubeGraph.TraceKernel
+import CubeGraph.IdempotentRetraction
+import CubeGraph.NonCancellative
+import CubeGraph.Absorption
+import CubeGraph.RowRank
+import CubeGraph.Rank1Algebra
+import CubeGraph.BandSemigroup
+import CubeGraph.Z2Reflection
+import CubeGraph.FullSupportComposition
+import CubeGraph.NonTransitivity
+import CubeGraph.InducedSubgraph
+import CubeGraph.MisalignedComposition
+import CubeGraph.GeometricReduction
+import CubeGraph.FlatBundleFailure
+import CubeGraph.RankMonotonicity
+import CubeGraph.IdempotenceBarrier
+import CubeGraph.DimensionThreshold
+import CubeGraph.TrivialPolymorphism
+import CubeGraph.KConsistency
+import CubeGraph.BarringtonConnection
+import CubeGraph.Z3Composition
+import CubeGraph.Unification
+import CubeGraph.BandwidthGap
+import CubeGraph.AbstractCSP
+import CubeGraph.SchoenebeckChain
+import CubeGraph.BarrierTheorem
+import CubeGraph.InformationChannel
+import CubeGraph.IntegerMonodromy
+import CubeGraph.Rank1Protocol
+import CubeGraph.QuantitativeGap
+import CubeGraph.QueryLowerBound
+import CubeGraph.CSPDecomposition
+import CubeGraph.LiftingTheorem
+import CubeGraph.KWGame
+import CubeGraph.MonotoneSizeLB
+import CubeGraph.Rank1Bubbles
+import CubeGraph.Resolution
+import CubeGraph.IdempotentSemiring
+import CubeGraph.RankWidthTransfer
+import CubeGraph.SublinearER
+import CubeGraph.SpreadingCompression
+import CubeGraph.BorromeanAC0

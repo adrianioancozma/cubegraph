@@ -1,0 +1,10 @@
+name = "CubeGraph"
+version = "0.1.0"
+defaultTargets = ["cubegraph"]
+
+[[lean_lib]]
+name = "CubeGraph"
+
+[[lean_exe]]
+name = "cubegraph"
+root = "Main"
