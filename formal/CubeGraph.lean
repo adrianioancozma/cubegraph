@@ -96,3 +96,9 @@ import CubeGraph.ERAggregateBricks
 import CubeGraph.ERKConsistentProof
 import CubeGraph.ERKConsistentInduction
 import CubeGraph.ERLowerBound
+import CubeGraph.PCLowerBound
+import CubeGraph.CPLowerBound
+import CubeGraph.AC0FregeLowerBound
+import CubeGraph.EFLowerBound
+import CubeGraph.DepthFregeLowerBound
+import CubeGraph.FregeLowerBound
