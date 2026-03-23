@@ -251,6 +251,8 @@ def HasMonotoneFIP (system : String) (c : Nat) : Prop :=
     boundary [AlphaGapConsistency] -> Razborov approximation -> 2^{Omega(n)}.
 
     Axiom citing: Razborov (1985) + Schoenebeck (2008). -/
+-- WARNING: Overclaims — Razborov's bound requires balanced bipartition with
+-- specific distributional properties, not arbitrary bipartitions.
 axiom monotone_interpolant_exponential :
     ∃ c₁ c₂ : Nat, c₁ ≥ 2 ∧ c₂ ≥ 1 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable ∧

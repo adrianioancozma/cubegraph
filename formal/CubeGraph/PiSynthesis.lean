@@ -68,6 +68,7 @@ def PiBorromeanOrder (G : CubeGraph) (b : Nat) : Prop :=
 
 /-- Schoenebeck: exists UNSAT CubeGraphs with BorromeanOrder Omega(n).
     (from SchoenebeckChain.lean) -/
+-- DUPLICATE: equivalent to schoenebeck_linear in SchoenebeckChain.lean
 axiom pi_schoenebeck_linear :
     ∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧

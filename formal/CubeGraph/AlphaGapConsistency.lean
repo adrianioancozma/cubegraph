@@ -285,6 +285,7 @@ theorem and_term_blind (G : CubeGraph) (b : Nat)
 
     Reference: Schoenebeck, "Linear level Lasserre lower bounds for
     certain k-CSPs." FOCS 2008. -/
+-- DUPLICATE: equivalent to schoenebeck_linear in SchoenebeckChain.lean
 axiom alpha_schoenebeck_linear :
     ∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧
@@ -292,28 +293,17 @@ axiom alpha_schoenebeck_linear :
 
 /-! ## Section 7: Razborov Approximation Axiom -/
 
-/-- **Razborov Approximation (1985)** — external citation.
-
-    A monotone Boolean circuit of size s computing f can be approximated by
-    a t-DNF that agrees with f on distributions D_0 (NO) and D_1 (YES)
-    with error at most 1/3, where t = O(log s).
-
-    Contrapositive: if no t-DNF with t < w can approximate f on D_0/D_1,
-    then any monotone circuit for f has size >= 2^{Omega(w)}.
-
-    For gap consistency h:
-    - D_0 = UNSAT instances at rho_c (h = 0)
-    - D_1 = SAT instances at rho_c (h = 1)
-    - AND-term blindness: width < b(n) terms cannot distinguish D_0 from D_1
-    - Schoenebeck: b(n) = Theta(n)
-    - Therefore: monotone circuit size >= 2^{Omega(n)}
+/-- **Razborov Approximation (1985)** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual Razborov
+    -- approximation method (monotone circuit ≥ 2^{Ω(w)} from AND-width w) is not formalized.
 
     Reference: Razborov, "Lower bounds on the monotone complexity of
     some Boolean functions." Doklady 281 (1985). -/
-axiom alpha_razborov_approx_bound :
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem alpha_razborov_approx_bound :
     ∀ (t : Nat), t ≥ 1 →
-      -- The real content is the citation. We state it trivially.
-      t ≥ 1
+      t ≥ 1 :=
+  fun _ h => h
 
 /-! ## Section 8: Combined Monotone Lower Bound -/
 

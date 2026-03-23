@@ -95,6 +95,8 @@ import CubeGraph.ERKConsistentBridge
 import CubeGraph.ERAggregateBricks
 import CubeGraph.ERKConsistentProof
 import CubeGraph.ERKConsistentInduction
+import CubeGraph.ABDWidthLowerBound
+import CubeGraph.BSWWidthSize
 import CubeGraph.ERLowerBound
 import CubeGraph.PCLowerBound
 import CubeGraph.CPLowerBound

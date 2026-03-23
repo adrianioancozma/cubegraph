@@ -29,30 +29,16 @@ open BoolMat
 
 /-! ## Section 1: Braverman Axiom -/
 
-/-- **Braverman (2010)**: AC⁰ circuits of polynomial size and constant depth
-    are ε-fooled by polylog(n)-wise independence.
-
-    Consequence: any function computable in AC⁰ effectively depends on
-    at most polylog(n) "coordinates" of its input.
-
-    For CubeGraph: if the input is the gap masks of n cubes, an AC⁰ function
-    can only "see" polylog(n) cubes worth of information.
-
-    Since our instances are Θ(n)-wise consistent (Borromean order b = Θ(n)),
-    and polylog(n) << Θ(n), AC⁰ cannot distinguish SAT from UNSAT.
+/-- **Braverman (2010)** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual Braverman result
+    -- (polylog(n)-wise independence fools AC⁰) is not formalized.
+    -- For any c ≥ 2, r = 1 trivially satisfies r < c ∧ r ≥ 1.
 
     Reference: Braverman. "Polylogarithmic Independence Fools AC⁰ Circuits."
     JACM 57(5), 2010. Settles Linial-Nisan conjecture (1990). -/
-axiom braverman_polylog_fools_ac0 :
-    -- For any constant depth d and polynomial size bound,
-    -- AC⁰ is fooled by polylog(n)-wise independence.
-    -- Stated as: there exists a sublinear threshold r(n) = o(n)
-    -- such that r-wise consistency fools AC⁰.
-    -- (Our Borromean b(n) = Θ(n) >> r(n) for any sublinear r.)
-    ∀ (c : Nat), c ≥ 2 → ∃ (r : Nat), r < c ∧ r ≥ 1
-    -- Weak form: for any linear threshold c, there exists a smaller
-    -- threshold r that suffices for AC⁰. The actual Braverman bound
-    -- is polylog(n), which is << n/c for any constant c.
+theorem braverman_polylog_fools_ac0 :
+    ∀ (c : Nat), c ≥ 2 → ∃ (r : Nat), r < c ∧ r ≥ 1 :=
+  fun _ hc => ⟨1, by omega, by omega⟩
 
 /-! ## Section 2: Proof A — Algebraic (rank-1 = AC⁰) -/
 

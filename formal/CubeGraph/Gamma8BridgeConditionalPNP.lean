@@ -85,17 +85,15 @@ axiom er_resolution_lower_bound_fwd :
     ∃ c : Nat, c ≥ 1 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable
 
-/-- **ABD Weak Theorem** (forward-reference from Xi5ABDPebbleGame.lean).
-
-    PROVED in Xi5ABDPebbleGame.lean (abd_weak_cubegraph, 0 sorry).
-    Cannot be imported here due to transitive name collision.
-
-    Statement: KConsistent G k and UNSAT implies k < |G|.
-    This is the pebble game argument of Atserias-Dalmau (2008). -/
-axiom abd_weak_cubegraph_fwd :
+/-- **ABD Weak Theorem** (forward-reference placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual ABD result
+    -- (KConsistent G k ∧ UNSAT → k < |G|) is proved in Xi5ABDPebbleGame.lean.
+    -- Cannot be imported here due to transitive name collision. -/
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem abd_weak_cubegraph_fwd :
     ∀ (_G : CubeGraph), ∀ (_k : Nat),
-      True  -- placeholder: the full KConsistent statement requires
-            -- KConsistency.lean's definitions which are in the conflicting chain
+      True :=
+  fun _ _ => trivial
 
 /-- **T1 — TREE-LIKE ER EXPONENTIAL**: There exist infinitely many UNSAT
     CubeGraphs requiring exponential tree-like ER proofs.

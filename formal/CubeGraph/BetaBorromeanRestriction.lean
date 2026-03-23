@@ -157,26 +157,4 @@ theorem exhaustive_restriction_unsat (G : CubeGraph)
            fun j _ => hv j,
            fun e he _ _ => hc e he⟩
 
-/-! ## Section 6: Experimental Findings (Axiomatized) -/
-
-/-- **Experimental axiom**: At critical density, AC-3 after fixing 1 cube
-    empties all remaining cubes for UNSAT formulas.
-    Verified for n = 8, 10, 12, 14, 20, 30 (60+ UNSAT formulas). -/
-axiom ac3_single_restriction_detects :
-  ∃ (threshold : Nat), threshold = 1
-
-/-- **Experimental axiom**: Raw BorromeanOrder drop point scales as ~6% of cubes.
-
-    | n  | cubes | drop_point | fraction |
-    |----|-------|------------|----------|
-    | 8  | 27    | 2          | 7.5%     |
-    | 10 | 35    | 3          | 8.6%     |
-    | 14 | 56    | 3          | 5.4%     |
-    | 20 | 82    | 5          | 6.1%     |
-    | 30 | 126   | 5          | 4.0%     |
-
-    Fit: drop_point ~ 0.54 * n^0.68 -/
-axiom borromean_drop_scaling :
-  ∃ (lo hi : Nat), lo = 3 ∧ hi = 10
-
 end CubeGraph

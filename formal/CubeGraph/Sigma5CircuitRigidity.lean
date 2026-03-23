@@ -317,6 +317,7 @@ theorem the_gap_is_pnp :
 
     Reference: Schoenebeck, "Linear level Lasserre lower bounds for
     certain k-CSPs." FOCS 2008. -/
+-- DUPLICATE: equivalent to schoenebeck_linear in SchoenebeckChain.lean
 axiom schoenebeck_borromean_linear :
     ∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧

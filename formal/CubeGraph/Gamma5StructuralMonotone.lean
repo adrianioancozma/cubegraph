@@ -375,10 +375,12 @@ theorem full_structural_monotone_chain :
 
 /-! ## Part 5: Structural Separation from BPR -/
 
-/-- Trivial axiom placeholder for the standard assumption that factoring
-    is not computable by polynomial-size monotone circuits.
+/-- **Factoring requires non-monotone circuits** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual result
+    -- (factoring not in monotone-P) is not formalized.
     Reference: Razborov (1985). -/
-axiom factoring_requires_nonmonotone : True
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem factoring_requires_nonmonotone : True := trivial
 
 /-- Structural separation: CubeGraph gap consistency and BPR-type
     counterexamples live in different monotonicity classes. -/

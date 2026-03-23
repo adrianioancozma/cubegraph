@@ -72,6 +72,7 @@ private theorem rank1_compose_closed {n : Nat} {A B : BoolMat n}
 
 /-- Schoenebeck (2008): SA needs level Ω(n) for random 3-SAT at ρ_c.
     Axiom in SchoenebeckChain.lean. -/
+-- DUPLICATE: equivalent to schoenebeck_linear in SchoenebeckChain.lean
 axiom schoenebeck_linear_local :
     ∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧
@@ -79,24 +80,32 @@ axiom schoenebeck_linear_local :
 
 /-- Resolution lower bound: ER proof size ≥ 2^{Ω(n)} on random 3-SAT.
     (BSW 2001 + Schoenebeck 2008 + ABD+AD 2007/2008.) -/
+-- WARNING: Claims Resolution lower bound but statement only asserts existence
+-- of large UNSAT graphs. The actual exponential size bound is missing.
 axiom resolution_lb :
     ∃ c : Nat, c ≥ 1 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable
 
 /-- Cutting Planes proof size ≥ 2^{Ω(n)} on random 3-SAT.
     (Hrubes-Pudlak 2017 + Schoenebeck 2008 + ABD+AD+Krajicek.) -/
+-- WARNING: Claims Cutting Planes lower bound but statement only asserts existence
+-- of large UNSAT graphs. The actual exponential size bound is missing.
 axiom cp_lb :
     ∃ c : Nat, c ≥ 1 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable
 
 /-- Polynomial Calculus proof size ≥ 2^{Ω(n)} on random 3-SAT.
     (Razborov 1998 + Schoenebeck 2008 + ABD+AD.) -/
+-- WARNING: Claims Polynomial Calculus lower bound but statement only asserts
+-- existence of large UNSAT graphs. The actual exponential size bound is missing.
 axiom pc_lb :
     ∃ c : Nat, c ≥ 1 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable
 
 /-- AC⁰-Frege at depth d ≥ 2: proof size ≥ 2^{Ω(n)} on random 3-SAT.
     (BIKPPW 1996 + Hastad 1986 + Schoenebeck 2008.) -/
+-- WARNING: Claims AC0-Frege lower bound but statement only asserts existence
+-- of large UNSAT graphs. The actual exponential size bound is missing.
 axiom ac0frege_lb (d : Nat) :
     d ≥ 2 →
     ∃ c : Nat, c ≥ 1 ∧ ∀ n ≥ 1,

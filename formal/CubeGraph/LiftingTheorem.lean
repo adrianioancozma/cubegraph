@@ -27,38 +27,29 @@ namespace CubeGraph
 
 /-! ## Section 1: GPW Lifting Axiom -/
 
-/-- **Göös-Pitassi-Watson Lifting Theorem** (axiom).
-
-    For any Boolean function f on n inputs and the index gadget g_m
-    with m = poly(n):
-      CC(f ∘ g^n) ≥ DT(f) × Ω(log n)
-
-    We axiomatize a concrete form: if DT(f) ≥ n/c, then the
-    communication complexity of the composed function is ≥ n/(c'·log₂(n+1)).
+/-- **Göös-Pitassi-Watson Lifting Theorem** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual GPW result
+    -- (CC(f ∘ g^n) ≥ DT(f) × Ω(log n)) is not formalized.
 
     Reference: Göös-Pitassi-Watson, SIAM J. Comput. 49(4), 2020, Theorem 1. -/
-axiom gpw_lifting :
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem gpw_lifting :
     ∀ (dt_lower_bound : Nat) (n : Nat),
       dt_lower_bound > 0 → n ≥ 2 →
-      -- If DT(f) ≥ dt_lower_bound, then CC(f ∘ g^n) ≥ dt_lower_bound / O(log n).
-      -- Concrete: ∃ constant C such that CC ≥ dt_lower_bound / C.
-      -- We state the weaker: CC > 0 (non-trivial communication needed).
-      -- The full quantitative bound is in the paper reference.
-      dt_lower_bound > 0  -- tautological weak form; content is the axiom name + reference
+      dt_lower_bound > 0 :=
+  fun _ _ h _ => h
 
-/-- **Karchmer-Wigderson** (axiom): CC of the KW game = monotone circuit depth.
-
-    For any monotone Boolean function f:
-      monotone_depth(f) = CC(KW_f)
-
-    We axiomatize: CC lower bound implies monotone depth lower bound.
+/-- **Karchmer-Wigderson** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual KW result
+    -- (CC of KW game = monotone circuit depth) is not formalized.
 
     Reference: Karchmer, Wigderson (1990). -/
-axiom kw_cc_equals_depth :
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem kw_cc_equals_depth :
     ∀ (cc_lower_bound : Nat),
       cc_lower_bound > 0 →
-      -- CC ≥ cc_lower_bound → monotone depth ≥ cc_lower_bound
-      cc_lower_bound > 0  -- tautological form; the content is in the axiom name
+      cc_lower_bound > 0 :=
+  fun _ h => h
 
 /-! ## Section 2: Application to CubeGraph SAT -/
 

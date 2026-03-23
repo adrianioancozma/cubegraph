@@ -280,23 +280,14 @@ structure NaturalProofProperty where
       (stated abstractly) -/
   large : True
 
-/-- **Razborov-Rudich Barrier (1997)** (axiom).
-
-    If one-way functions exist, then no natural proof property can
-    prove super-polynomial general circuit lower bounds.
-
-    The precise statement: for any natural proof property P,
-    if P(f) → circuit(f) ≥ s(n) for all f, then s(n) ≤ n^{O(1)}.
-
-    In other words: natural proofs can only prove polynomial lower bounds
-    on general circuits (assuming cryptographic hardness).
+/-- **Razborov-Rudich Barrier (1997)** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual Razborov-Rudich result
+    -- (natural proofs cannot prove super-poly circuit LBs under OWF) is not formalized.
 
     Reference: Razborov, Rudich. "Natural proofs." JCSS 55(1), 1997. -/
-axiom razborov_rudich_barrier :
-    -- Assuming one-way functions exist (standard cryptographic assumption),
-    -- natural proof techniques cannot prove super-polynomial general circuit LBs.
-    -- Stated as: the barrier exists (the precise formulation is in the reference).
-    True
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem razborov_rudich_barrier :
+    True := trivial
 
 /-- **AND-term evaluation IS natural.**
     The Razborov approximation method checks: "does a t-DNF approximate h?"
@@ -354,22 +345,16 @@ theorem gap_consistency_is_np_complete :
   - The Tardos function is specially constructed; gap consistency might not have this
   - But we have no proof that it doesn't -/
 
-/-- **Restriction Monotonicity Conjecture (RMC).**
-
-    For gap consistency h: general circuit complexity ≥ monotone / poly.
-
-    This is a CONJECTURE, not a theorem. We state it as an axiom to
-    enable the conditional chain in Part 6. -/
-axiom restrictionMonotonicityConjecture :
-    -- For the gap consistency function h at ρ_c:
-    -- ∃ polynomial p such that circuit(h) ≥ monotone_circuit(h) / p(n)
-    -- In particular: if monotone ≥ 2^{Ω(n)}, then general ≥ 2^{Ω(n)}/poly
-    -- which is still 2^{Ω(n)}.
+/-- **Restriction Monotonicity Conjecture (RMC)** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual RMC
+    -- (general circuit ≥ monotone / poly for gap consistency) is not formalized.
+    -- The conclusion `True` makes this trivially provable. -/
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem restrictionMonotonicityConjecture :
     ∃ c : Nat, c ≥ 1 ∧ ∀ (G : CubeGraph),
       ¬ G.Satisfiable →
-      -- General circuit size ≥ (monotone circuit size)^{1/c}
-      -- This is a weak form; the full conjecture is poly-factor.
-      True
+      True :=
+  ⟨1, by omega, fun _ _ => trivial⟩
 
 /-- **Minimum general (non-monotone) circuit size for gap consistency.** -/
 axiom minGeneralCircuitSize (G : CubeGraph) : Nat

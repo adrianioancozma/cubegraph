@@ -3,66 +3,66 @@
 
   Chains proven results with literature axioms:
   1. er_exponential_unconditional: KConsistent(T(G), n/c₁) ∀ ER extensions  [Lean, 0 sorry]
-  2. abd_bsw_resolution_exponential: KConsistent + UNSAT → size ≥ 2^{k/c₂}  [ABD+AD+BSW axiom]
+  2. abd_bsw_combined_exponential: KConsistent + UNSAT → size ≥ 2^{k/c₂}   [BSWWidthSize theorem]
   3. ER proof = Resolution on T(G)                                            [definitional]
   4. Therefore: ER proof size ≥ 2^{n/(c₁·c₂)}                               [er_resolution_lower_bound]
 
-  New axioms (2, both from published literature):
-  - minResolutionSize: Resolution proof size (axiom-specified)
-  - abd_bsw_resolution_exponential: ABD+AD (2007/2008) + BSW (2001) combined
+  Axiom decomposition:
+  - The former monolithic axiom `abd_bsw_resolution_exponential` has been replaced
+    by the theorem `abd_bsw_combined_exponential` (BSWWidthSize.lean), which is
+    derived from three smaller, independently published axioms:
+    - abd_width_from_kconsistency (ABD 2007 / AD 2008): width > k
+    - bsw_width_exponential (BSW 2001, Thm 3.2): size ≥ 2^{width/c}
+    - minResWidth, minResolutionSize (axiom-specified functions)
+
+  The former axiom `abd_bsw_resolution_exponential` is now re-exported as a
+  theorem for backward compatibility with downstream files.
+
+  NEW local axioms: 0 (all axioms are in BSWWidthSize and ABDWidthLowerBound)
 
   Result:
   - er_resolution_lower_bound: ∃ UNSAT 3-SAT families where ER proofs ≥ 2^{Ω(n)}
+  - abd_bsw_resolution_exponential: backward-compatible theorem (was axiom)
 
-  See: PCLowerBound.lean (Polynomial Calculus lower bound, same pattern)
+  See: BSWWidthSize.lean (ABD + BSW axiom decomposition)
+  See: ABDWidthLowerBound.lean (ABD axiom: width > k from k-consistency)
   See: ERKConsistentInduction.lean (er_exponential_unconditional)
   See: ERKConsistentProof.lean (er_kconsistent_from_aggregate, axiom #12 eliminated)
   Plan: experiments-ml/025_2026-03-19_synthesis/bridge/D7-PLAN-INFORMATION-CAPACITY.md
 -/
 
 import CubeGraph.ERKConsistentInduction
+import CubeGraph.BSWWidthSize
 
 namespace CubeGraph
 
 open BoolMat
 
-/-! ## Section 1: Resolution proof size (axiom-specified) -/
+/-! ## Section 1: Backward compatibility
 
-/-- Minimum Resolution proof size for a CubeGraph.
-    For UNSAT G: the minimum number of clauses in any Resolution refutation
-    of the CNF formula associated with G.
-    For SAT G: unconstrained (axioms only apply to UNSAT).
-
-    We do not model Resolution proofs directly. This function is specified
-    by axioms corresponding to published results. -/
-axiom minResolutionSize (G : CubeGraph) : Nat
-
-/-! ## Section 2: ABD+AD + BSW combined axiom -/
+  The former axiom `abd_bsw_resolution_exponential` is now a theorem,
+  derived from ABD + BSW (linear form) in BSWWidthSize.lean.
+  Re-exported here so that all downstream files that referenced it
+  (EFLowerBound, KappaFixedPoint, Epsilon3CubeBSW, PhiBSWRevived, etc.)
+  continue to compile without changes. -/
 
 /-- **Atserias-Bulatov-Dalmau (2007/2008) + Ben-Sasson-Wigderson (2001)**:
     k-consistency on UNSAT CubeGraph implies exponential Resolution proof size.
 
-    Chain of two results:
-    1. KConsistent G k ∧ ¬Satisfiable → Resolution refutation width > k
-       [Atserias, Bulatov, Dalmau. "Robust decidability of CSP." ICALP 2007]
-       [Atserias, Dalmau. "A combinatorial characterization of Resolution width."
-        JCSS 74(3), 2008]
-
-    2. Resolution width w on formula with n₀ initial clause width →
-       size ≥ 2^{(w - n₀)² / n}. For 3-SAT (n₀ = 3): size ≥ 2^{Ω(w²/n)}.
-       With w = Ω(n): size ≥ 2^{Ω(n)}.
-       [Ben-Sasson, Wigderson. "Short proofs are narrow — resolution made simple."
-        JACM 48(2), 2001, Corollary 3.6]
+    FORMERLY an axiom. Now derived from two smaller axioms:
+    - abd_width_from_kconsistency: KConsistent G k + UNSAT → minResWidth G > k
+    - bsw_width_exponential: UNSAT → minResolutionSize G ≥ 2^{minResWidth G / c}
 
     Combined: KConsistent G k ∧ ¬Satisfiable → minResolutionSize G ≥ 2^{k/c}
     for a universal constant c ≥ 2. -/
-axiom abd_bsw_resolution_exponential :
+theorem abd_bsw_resolution_exponential :
     ∃ c : Nat, c ≥ 2 ∧
       ∀ (G : CubeGraph) (k : Nat),
         KConsistent G k → ¬ G.Satisfiable →
-        minResolutionSize G ≥ 2 ^ (k / c)
+        minResolutionSize G ≥ 2 ^ (k / c) :=
+  abd_bsw_combined_exponential
 
-/-! ## Section 3: ER lower bound -/
+/-! ## Section 2: ER lower bound -/
 
 /-- **ER Lower Bound on random 3-SAT at critical density.**
 
@@ -76,14 +76,16 @@ axiom abd_bsw_resolution_exponential :
     and ALL T(G) require exponential Resolution:
     **ER proofs of G require size ≥ 2^{Ω(n)}.**
 
-    Axioms used (all published, standard):
+    Axioms used (all published, standard — now decomposed):
     - schoenebeck_linear (Schoenebeck 2008)
-    - abd_bsw_resolution_exponential (ABD 2007 + AD 2008 + BSW 2001)
+    - abd_width_from_kconsistency (ABD 2007 + AD 2008)
+    - bsw_width_exponential (BSW 2001, Theorem 3.2)
 
     Theorems used (Lean-proven, 0 sorry):
     - er_kconsistent_from_aggregate (replaces former axiom #12)
     - kconsistent_extends_to_originals
-    - er_borromean_unconditional -/
+    - er_borromean_unconditional
+    - abd_bsw_combined_exponential (replaces former axiom abd_bsw_resolution_exponential) -/
 theorem er_resolution_lower_bound :
     ∃ c : Nat, c ≥ 1 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable ∧
