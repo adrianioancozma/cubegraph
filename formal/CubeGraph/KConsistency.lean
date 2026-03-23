@@ -19,6 +19,8 @@
 
 import CubeGraph.FlatBundleFailure
 
+set_option maxHeartbeats 400000
+
 namespace CubeGraph
 
 /-! ## Section 1: k-Consistency Definition -/
@@ -101,7 +103,8 @@ theorem h2graph_2consistent : KConsistent h2Graph 2 := by
     have hg2 := transferOp_implies_gap₂ hcompat
     -- e.1 ≠ e.2 for h2Graph edges
     have hne : e.1 ≠ e.2 := by
-      simp only [h2Graph, List.mem_cons, List.mem_nil_iff, or_false] at he
+      delta h2Graph at he
+      simp only [List.mem_cons, List.mem_nil_iff, or_false] at he
       rcases he with rfl | rfl | rfl <;> decide
     -- Every element of S is e.1 or e.2 (from |S|≤2 + Nodup + 2 distinct members)
     have hS_sub : ∀ x ∈ S, x = e.1 ∨ x = e.2 :=
@@ -121,8 +124,9 @@ theorem h2graph_2consistent : KConsistent h2Graph 2 := by
       have h2'_eq := hS_sub e'.2 h2'
       -- e' has distinct endpoints (h2Graph edges)
       have hne' : e'.1 ≠ e'.2 := by
-        simp only [h2Graph, List.mem_cons, List.mem_nil_iff, or_false] at he'
-        rcases he' with rfl | rfl | rfl <;> decide
+        revert he'; unfold h2Graph
+        simp only [List.mem_cons, List.mem_nil_iff, or_false]
+        intro h; rcases h with rfl | rfl | rfl <;> decide
       -- e'.1, e'.2 ∈ {e.1, e.2} with e'.1 ≠ e'.2 → (e'.1,e'.2) = (e.1,e.2) or (e.2,e.1)
       -- e'.1 ∈ {e.1, e.2} and e'.2 ∈ {e.1, e.2} with e'.1 ≠ e'.2
       -- 4 combinations, 2 are self-loops (impossible), 1 is e, 1 is reverse (impossible)
@@ -133,9 +137,25 @@ theorem h2graph_2consistent : KConsistent h2Graph 2 := by
         simp only [h1eq, h2eq, ite_true, if_neg (Ne.symm hne)]; exact hcompat
       · -- e'.1 = e.2, e'.2 = e.1 → reverse edge. h2Graph has none.
         exfalso
-        simp only [h2Graph, List.mem_cons, List.mem_nil_iff, or_false] at he he'
-        rcases he with rfl | rfl | rfl <;> rcases he' with rfl | rfl | rfl <;>
-          simp_all [Fin.ext_iff]
+        -- Use Fin.val equalities
+        have hv1 := congrArg Fin.val h1eq  -- e'.1.val = e.2.val
+        have hv2 := congrArg Fin.val h2eq  -- e'.2.val = e.1.val
+        -- Convert both membership to Nat-level via Fin.ext_iff
+        let f := fun (p : Fin h2Graph.cubes.length × Fin h2Graph.cubes.length) => (p.1.val, p.2.val)
+        have he_nat : f e ∈ (h2Graph.edges.map f) := List.mem_map.mpr ⟨e, he, rfl⟩
+        have he'_nat : f e' ∈ (h2Graph.edges.map f) := List.mem_map.mpr ⟨e', he', rfl⟩
+        -- Evaluate the mapped list
+        have hlist : h2Graph.edges.map (fun p => (p.1.val, p.2.val)) = [(0,1), (1,2), (2,0)] := by
+          native_decide
+        rw [hlist] at he_nat he'_nat
+        -- he_nat, he'_nat are membership in [(0,1),(1,2),(2,0)]
+        -- Combine with hv1: e'.1.val = e.2.val, hv2: e'.2.val = e.1.val
+        simp only [List.mem_cons, List.mem_nil_iff, or_false] at he_nat he'_nat
+        -- Now they're disjunctions of pair equalities
+        rcases he_nat with h | h | h <;> rcases he'_nat with h' | h' | h' <;> (
+          obtain ⟨ha, hb⟩ := Prod.mk.inj h
+          obtain ⟨hc, hd⟩ := Prod.mk.inj h'
+          omega)
       · -- e'.1 = e.2, e'.2 = e.2 → e'.1 = e'.2. Contradiction.
         exact absurd (h1eq.trans h2eq.symm) hne'
   · refine ⟨dflt, fun i _ => (hgap i).choose_spec, fun e he h1 h2 => ?_⟩

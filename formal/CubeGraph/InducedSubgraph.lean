@@ -231,7 +231,8 @@ private theorem restrictToSubgraph_compatible (G : CubeGraph) (keep : List (Fin 
     (h_nodup : keep.Nodup) (s : GapSelection G) (hc : compatibleSelection G s) :
     compatibleSelection (G.inducedSubgraph keep h_nodup) (restrictToSubgraph G keep h_nodup s) := by
   intro ⟨ea, eb⟩ hmem
-  simp only [inducedSubgraph, List.mem_filterMap] at hmem
+  unfold inducedSubgraph at hmem
+  rw [List.mem_filterMap] at hmem
   obtain ⟨⟨e1, e2⟩, he_mem, h_fm⟩ := hmem
   generalize hfp1 : findPos keep e1 = fp1 at h_fm
   generalize hfp2 : findPos keep e2 = fp2 at h_fm
@@ -274,7 +275,8 @@ private theorem inducedSubgraph_preserves_ac (G : CubeGraph)
     (h_ac : AllArcConsistent G) :
     AllArcConsistent (G.inducedSubgraph keep h_nodup) := by
   intro ⟨ea, eb⟩ hmem
-  simp only [inducedSubgraph, List.mem_filterMap] at hmem
+  unfold inducedSubgraph at hmem
+  rw [List.mem_filterMap] at hmem
   obtain ⟨⟨e1, e2⟩, he_mem, h_fm⟩ := hmem
   generalize hfp1 : findPos keep e1 = fp1 at h_fm
   generalize hfp2 : findPos keep e2 = fp2 at h_fm

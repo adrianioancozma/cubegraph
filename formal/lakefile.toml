@@ -2,6 +2,11 @@ name = "CubeGraph"
 version = "0.1.0"
 defaultTargets = ["cubegraph"]
 
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+version = "git#master"
+
 [[lean_lib]]
 name = "CubeGraph"
 
