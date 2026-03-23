@@ -164,6 +164,8 @@ axiom weak_expander_resolution_width :
     eps_k = 2^{-(k+1)}.
 
     We state a weaker clean version: size >= n (super-linear). -/
+-- WARNING: GT24 proves this for RANDOM 3-CNF, not arbitrary UNSAT CubeGraphs.
+-- The forall G quantifier is too strong.
 axiom gt24_superlinear_bound :
     ∀ k : Nat, k ≥ 1 →
       ∃ n₀ : Nat, ∀ n ≥ n₀,

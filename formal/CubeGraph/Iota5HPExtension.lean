@@ -253,6 +253,8 @@ theorem fip_from_restriction_monotonicity :
     if Frege (a concrete, well-studied system) requires exponential proofs
     on random 3-SAT, this witnesses the non-existence of a poly-bounded
     proof system (since Frege simulates Resolution, CP, and bounded-depth LK). -/
+-- WARNING: OVERCLAIMS. Frege being exponential does NOT imply P!=NP. Extended
+-- Frege (or other proof systems) could still be polynomial. See Cook-Reckhow 1979.
 axiom frege_exponential_implies_no_poly_sat :
     (∃ c₁ : Nat, c₁ ≥ 2 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable ∧

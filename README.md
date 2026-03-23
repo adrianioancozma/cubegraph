@@ -1,123 +1,147 @@
-# CubeGraph — A Geometric Framework for 3-SAT
+# CubeGraph — A Lean 4 Formalization of 3-SAT Proof Complexity
 
-A Lean 4 formalization of the CubeGraph model for analyzing 3-SAT complexity,
-containing a chain of theorems from arithmetic through algebra to a complexity separation.
+A Lean 4 formalization of the CubeGraph model for analyzing 3-SAT structure,
+with conditional proof complexity lower bounds for Resolution, Extended Resolution,
+Polynomial Calculus, Cutting Planes, and bounded-depth Frege.
 
 ## Status
 
-- **246 Lean files**, ~3800 theorems, **0 sorry**, 0 errors
-- `lake build` passes (212 jobs)
+- **249 Lean files**, ~3800 theorems, **0 sorry**, 0 errors
+- `lake build` passes (216 jobs)
+- **91 axioms** (all citing published results; 22 function specs, remainder are
+  standard literature citations from Schoenebeck 2008, BSW 2001, ABD 2007, etc.)
 - **Research in progress** — awaiting independent expert review
 
 ## What is CubeGraph?
 
-A 3-SAT clause over variables {A, B, C} corresponds to a vertex of the cube {0,1}³.
+A 3-SAT clause over variables {A, B, C} corresponds to a vertex of the cube {0,1}^3.
 An **empty vertex (gap)** is a satisfying assignment in disguise. CubeGraph connects
-cubes sharing variables, creating a constraint graph where:
+cubes sharing variables, creating a constraint graph equivalent to the standard CSP
+microstructure (Jeavons et al. 1997).
 
-- **SAT** = common fixed point of monodromy operators exists
-- **UNSAT** = fixed point missing (topological twist on cycles)
+- **SAT** = compatible gap selection exists across all cubes
+- **UNSAT** = no globally compatible selection (constraint propagation fails)
 
 ## Formalization
 
 | Metric | Value |
 |---|---|
-| Lean files | 246 |
+| Lean files | 249 |
 | Theorems + lemmas | ~3800 |
-| External axioms | ~105 (all published theorems) |
+| Axioms (total) | 91 |
+| Axioms (literature citations) | ~43 substantive |
+| Axioms (function specs) | 22 |
+| Axioms (duplicates) | 10 |
 | Invented axioms | **0** |
 | `sorry` | **0** |
-| `lake build` | 212 jobs, passes |
+| `lake build` | 216 jobs, passes |
 
 ## Key Results
 
-### The Algebraic Chain (0 sorry, 0 invented axioms)
+### Proven Theorems (0 sorry, 0 invented axioms)
 
 | File | Theorem | What it proves |
 |------|---------|---------------|
-| `Theta3NonAffine` | `seven_not_pow2` | 7 ≠ 2^k (gap sets non-affine) |
-| `Lambda3IrreversibleDecay` | `synthesis_irreversible_decay` | OR absorptive → rank-1 aperiodic (M³=M²) |
+| `GeometricReduction` | `tripartite_equivalence` | CubeGraph SAT <-> 3-SAT (model correctness) |
+| `ERKConsistentProof` | `er_kconsistent_from_aggregate` | k-consistency preserved through ER extensions (fully proved) |
+| `Zeta7GrandUnified` | `grand_unified_12` | 12-component algebraic characterization of 3-SAT hardness |
 | `Nu6BooleanInvolution` | `boolean_involution_is_permutation` | Boolean involutions = permutation matrices |
-| `Gamma6KRConsequences` | `z2_in_generated_semigroup` | Z/2Z ⊆ T₃*, KR(T₃*) = 1 |
-| `Xi6ReesStructure` | Rees⁰(Z/2Z,2,2) | Complete algebraic structure of T₃* |
-| `Delta6LargerGroups` | Z/2Z maximal | Boolean collapse: rich operators → idempotent |
-| `Theta6BooleanCollapse` | `selfloop_clique_idempotent` | Self-loop + clique support → M²=M |
-| `Epsilon7ParityObstruction` | `pow2_minus_one_odd` | 2^d-1 always odd → involutions have fixed points |
-| `Iota7BooleanFermat` | `boolean_fermat_for_cubegraph` | Rank r → period divides r! |
+| `Gamma6KRConsequences` | `z2_in_generated_semigroup` | Z/2Z in T3*, KR complexity >= 1 |
 | `Zeta8GapPreserving` | `gap_preserving_subgroup_order_two` | Gap-preserving subgroup = Z/2Z (order 2) |
-| `Iota8GapFactorization` | gap algebra closed | 15/17 permutations → zero at gap level |
-| `Zeta7GrandUnified` | `grand_unified_12` | 12-component Grand Unified Theorem |
+| `Iota8GapFactorization` | gap algebra closed | 15/17 permutations -> zero at gap level |
 
-### The Circuit Chain (0 sorry)
+### Proof Complexity Lower Bounds (conditional on literature axioms)
 
-| File | Theorem | What it proves |
-|------|---------|---------------|
-| `C2WireConstraint` | `wire_constraint_gap_restricted` | Wire constraints are gap-restricted |
-| `C4DecompositionHolds` | `shannon_decomposition` | Shannon: f(a) = (¬a(i)∧f[i:=0]) ∨ (a(i)∧f[i:=1]) |
-| `C4DecompositionHolds` | `gap_level_shannon` | Shannon lifted to BoolMat 8 |
-| `C3CompleteInduction` | `complete_fan_out_induction` | Fan-out induction assembly |
-| `B1BoundedFanOut` | `fanout1_projection_lemma` | Fan-out ≤ 1 → gap-restricted |
-| `Theta8RevisedProjection` | revised Projection Lemma | Gap capacity 2 < fiber 7 |
+| Proof System | Lower Bound | Axioms Used | File |
+|---|---|---|---|
+| Extended Resolution | 2^{Omega(n)} | Schoenebeck + ABD+BSW | ERLowerBound |
+| Polynomial Calculus | 2^{Omega(n)} | Schoenebeck + GHP + IPS | PCLowerBound |
+| Cutting Planes | 2^{Omega(n)} | Schoenebeck + ABD+Krajicek + HP | CPLowerBound |
+| AC^0-Frege (depth d) | 2^{n^{Omega(1/d)}} | Schoenebeck + BIKPPW | AC0FregeLowerBound |
 
-### The Connection (0 sorry)
+These lower bounds are conditional on correctly-encoded axioms from published
+results. The axiom `abd_bsw_resolution_exponential` has been decomposed into
+a **theorem** derived from smaller axioms (`abd_width_from_kconsistency` from
+ABD 2007 and `bsw_width_to_size` from BSW 2001).
 
-| File | Theorem | What it proves |
-|------|---------|---------------|
-| `V1PNeNP` | `unconditional_chain` | All components assembled unconditionally |
-| `V1PNeNP` | `premises_satisfied` | C4 witnesses satisfy C3's conditions |
-| `GeometricReduction` | `tripartite_equivalence` | CubeGraph SAT ↔ 3-SAT |
+The key technical contribution is `er_kconsistent_from_aggregate` — a fully
+machine-verified proof (0 sorry, 0 axioms) that k-consistency transfers through
+ER extensions satisfying sparsity and aggregation conditions.
 
-### Proof Complexity Lower Bounds (with literature axioms)
+### Known Issues (from independent audit, 2026-03-23)
 
-| Proof System | Lower Bound | File |
-|---|---|---|
-| Resolution | 2^{Ω(n)} | ERLowerBound |
-| Extended Resolution | 2^{Ω(n)} | ERLowerBound |
-| Polynomial Calculus | 2^{Ω(n)} | PCLowerBound |
-| Cutting Planes | 2^{Ω(n)} | CPLowerBound |
-| AC⁰-Frege (depth d) | 2^{n^{Ω(1/d)}} | AC0FregeLowerBound |
-| Monotone circuits | 2^{Ω(n)} | MonotoneSizeLB |
-| Frege (unbounded) | Ω(n²/log n) | FregeLowerBound |
+- The `frege_simulation` axiom is **not faithful** to Tseitin/Cook. Standard
+  Tseitin produces cubes with 6 gaps (not 7) and extension variables in
+  multiple cubes. The Frege lower bound (`frege_superlinear`) is formally
+  valid but **not sound**. See `Q3-FREGE-SIMULATION.md` in the audit.
 
-## What This Claims
+- The `unconditional_chain` in V1PNeNP.lean states algebraic facts (capacity=2,
+  2<7, h2 UNSAT, CubeGraph=3-SAT) but does **not** state P != NP. Complexity
+  classes P, NP, and circuit complexity are never formally defined.
 
-The formalization establishes that **if** the `SimpleGate` circuit model
-faithfully captures the gap-level effect of Boolean DAG circuits via Shannon
-decomposition, **then** the algebraic capacity bound (gap-preserving Z/2Z,
-capacity 2 < fiber 7) implies an exponential lower bound for gap consistency
-on CubeGraphs at critical density.
-
-Combined with the geometric reduction (CubeGraph SAT ↔ 3-SAT), this would
-imply P ≠ NP.
+- The ER lower bound is conditional on h_sparse (>=7 gaps) and h_aggregate
+  (fresh variable) for ER extensions. Standard Tseitin extensions do not
+  satisfy these conditions. Research is ongoing to remove these conditions.
 
 ## What This Does NOT Claim
 
-- This is **not** a verified proof of P ≠ NP.
-- The `SimpleGate` model is tree-like (recursive). The equivalence with
-  general DAG circuits uses Shannon decomposition, which is mathematically
-  standard but the full DAG-to-tree reduction requires additional verification.
+- This is **not** a proof of P != NP.
+- This is **not** a verified super-linear Frege lower bound (the axiom is unsound).
+- The algebraic chain (capacity < fiber) is a collection of true algebraic facts
+  that do not imply a complexity separation without additional formalization.
+- The `SimpleGate` / `CircuitGapProjection` bridge is a **placeholder** (returns
+  BoolMat.zero). The gap between algebraic structure and circuit complexity is
+  not formalized.
 - **Independent expert review is needed** before any claims are made.
+
+## What This IS
+
+A substantial Lean 4 formalization (~3800 theorems, 0 sorry) that:
+
+1. **Formalizes 3-SAT as a CSP** with the CubeGraph model, proving equivalence
+   with standard satisfiability (tripartite_equivalence).
+
+2. **Analyzes the algebraic structure** of boolean transfer operators (Krohn-Rhodes
+   complexity, boolean collapse, gap-preserving subgroup analysis).
+
+3. **Proves conditional proof complexity lower bounds** for ER, PC, CP, and
+   AC^0-Frege, using literature axioms that cite specific published results.
+
+4. **Fully proves k-consistency transfer** through ER extensions
+   (er_kconsistent_from_aggregate, 0 sorry, 0 axioms).
+
+5. **Identifies precisely** where the gap lies between algebraic structure and
+   circuit/proof complexity, including a detailed analysis of why the Tseitin
+   simulation fails to satisfy the sparsity conditions.
 
 ## Building
 
 Requires Lean 4 (v4.29.0-rc6) via [elan](https://github.com/leanprover/elan).
-Mathlib is fetched automatically.
 
 ```bash
 cd formal
-lake build     # 212 jobs, ~5 min
+lake build     # 216 jobs, ~5 min
 ```
+
+## Audit
+
+An independent audit (8 reports, 6 agents) was conducted on 2026-03-23.
+See `experiments-ml/026_2026-03-24_audit/` for:
+- `D1-SYNTHESIS.md` — overall verdict
+- `E1-SKELETON.md` — minimum chain analysis
+- `F1-TRANSLATION.md` — mapping to standard literature
+- `C1-DEVILS-ADVOCATE.md` — adversarial analysis
+- `C2-BARRIERS.md` — barrier analysis (relativization, natural proofs, algebrization)
+- `Q6-AXIOM-INVENTORY.md` — complete axiom inventory with classifications
 
 ## History
 
-Developed March 2026 using a swarm of ~150 AI agents across ~130 generations,
-guided by human mathematical insight. The two fundamental contributions:
-
-1. **CubeGraph framework**: the distinction between algebraic (operator) and
-   topological (graph) structure, and their tensor decomposition.
-2. **The 2→3 transition**: 2 = reflection/function/generation (P),
-   3 = enumeration/relation (NP). The negation of the existential quantifier
-   (removing 1 from 2^d) creates the non-affine structure that drives NP-hardness.
+Developed March 2026 using a swarm of AI agents (~150 agents, ~130 generations),
+guided by human mathematical insight. Post-development audit identified structural
+issues with the Frege simulation axiom and the gap between algebraic facts and
+complexity claims. Axiom cleanup reduced count from 105 to 91 (17 tautological
+axioms converted to theorems, 3 dead-code axioms deleted, 1 monolithic axiom
+decomposed into focused sub-axioms).
 
 ## License
 

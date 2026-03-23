@@ -67,6 +67,7 @@ theorem omega_blind_below (G : CubeGraph) (b : Nat)
   hbo.2 hb S hlen hnd
 
 /-- Schoenebeck linear (axiom): SA needs level Omega(n). -/
+-- DUPLICATE: equivalent to schoenebeck_linear in SchoenebeckChain.lean
 axiom omega_schoenebeck_linear :
     ∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧

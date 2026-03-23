@@ -45,6 +45,8 @@ namespace CubeGraph
 
     Reference: Ben-Sasson, Wigderson. "Short proofs are narrow —
     resolution made simple." JACM 48(2), 2001, Theorem 4.19. -/
+-- NOTE: Despite the name, this encodes Schoenebeck k-consistency, not BSW
+-- resolution width directly. Equivalent to schoenebeck_linear via ABD+AD.
 axiom bsw_resolution_width :
     ∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable ∧
@@ -59,25 +61,17 @@ axiom bsw_resolution_width :
 
 /-! ## Section 2: GGKS Axiom — Width → Monotone Size -/
 
-/-- **Garg-Goos-Kamath-Sokolov (2018/2020)**: Resolution width w implies
-    monotone circuit size n^{Θ(w)} for the composed function.
-
-    Theorem 3.1: For search problem S with Resolution width w(S),
-    and index gadget IND_m with m = n^Δ:
-      rect-DAG(S ∘ IND_m^n) = n^{Θ(w(S))}
-
-    rect-DAG complexity = monotone circuit size (KW correspondence).
-
-    For random 3-SAT with w = Ω(n):
-      monotone size ≥ n^{Ω(n)} = exponential.
+/-- **Garg-Goos-Kamath-Sokolov (2018/2020)** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual GGKS result
+    -- (resolution width w → monotone circuit size n^{Θ(w)}) is not formalized.
 
     Reference: Garg, Goos, Kamath, Sokolov. "Monotone circuit lower
     bounds from resolution." Theory of Computing 16(13), 2020, Theorem 3.1. -/
-axiom ggks_width_to_monotone_size :
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem ggks_width_to_monotone_size :
     ∀ (width : Nat), width > 0 →
-      -- Resolution width w → monotone circuit size ≥ w
-      -- (weak form: content is in the axiom name + reference)
-      width > 0
+      width > 0 :=
+  fun _ h => h
 
 /-! ## Section 3: Combined — Monotone SIZE Exponential -/
 

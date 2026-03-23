@@ -104,6 +104,8 @@ def DepthUniformLB (c : Nat) : Prop :=
     Precisely, we state: for any Frege proof of size S on a CubeGraph G
     with n cubes, there exists an AC^0_d-Frege proof of size at most
     fps_bound(c, d, S) where fps_bound is polynomial in S for fixed d. -/
+-- NOTE: The Frege-to-bounded-depth simulation bound may be too weak (exponential
+-- in S). Standard simulation is polynomial for fixed depth.
 axiom fps_simulation :
     ∃ c : Nat, c ≥ 2 ∧ ∀ (G : CubeGraph),
       ¬ G.Satisfiable →

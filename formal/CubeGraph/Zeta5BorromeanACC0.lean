@@ -70,34 +70,18 @@ open BoolMat
   independence, since the union over finitely many primes doesn't
   change the polylog threshold (just increases the constant). -/
 
-/-- **Razborov-Smolensky (1987/1993) + Beigel-Tarui (1994)**:
-    ACC⁰[p] circuits of polynomial size and constant depth are
-    fooled by polylog(n)-wise independence.
-
-    Stated in the same form as braverman_polylog_fools_ac0 but
-    for the strictly larger class ACC⁰ (which includes MOD_p gates).
-
-    The real content: for any constant depth d, polynomial size S = n^a,
-    and prime p, ACC⁰[p] circuits are fooled by k-wise independence
-    for k = (log S)^{O(d)} = (a log n)^{O(d)} = polylog(n).
-
-    Since BorromeanOrder b(n) = Θ(n) >> polylog(n), this means ACC⁰
-    circuits cannot distinguish b(n)-wise consistent distributions
-    from truly independent ones.
+/-- **Razborov-Smolensky (1987/1993) + Beigel-Tarui (1994)** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual result
+    -- (ACC⁰ fooled by polylog(n)-wise independence) is not formalized.
+    -- For any c ≥ 2, r = 1 trivially satisfies r < c ∧ r ≥ 1.
 
     References:
-    - Razborov, "Lower bounds on the size of bounded-depth networks..."
-      Mat. Zametki 41(4), 1987.
-    - Smolensky, "Algebraic methods in the theory of lower bounds..."
-      STOC 1987.
-    - Beigel-Tarui, "On ACC." Computational Complexity 4(4), 1994.
-      (ACC⁰ → symmetric polynomials of polylog degree → foolable) -/
-axiom razborov_smolensky_acc0_fooled :
-    -- For any linear threshold c (representing b(n) = n/c),
-    -- there exists a smaller threshold r < c that suffices to fool ACC⁰.
-    -- This parallels braverman_polylog_fools_ac0 but is strictly stronger:
-    -- it covers MOD_p gates in addition to AND/OR/NOT.
-    ∀ (c : Nat), c ≥ 2 → ∃ (r : Nat), r < c ∧ r ≥ 1
+    - Razborov, Mat. Zametki 41(4), 1987.
+    - Smolensky, STOC 1987.
+    - Beigel-Tarui, Computational Complexity 4(4), 1994. -/
+theorem razborov_smolensky_acc0_fooled :
+    ∀ (c : Nat), c ≥ 2 → ∃ (r : Nat), r < c ∧ r ≥ 1 :=
+  fun _ hc => ⟨1, by omega, by omega⟩
 
 /-! ## Part 2: Borromean Order Exceeds ACC⁰ Threshold
 
@@ -299,28 +283,16 @@ theorem counting_useless :
   optimal Frege proofs have depth O(1). This is NOT proven.
   See: Strategist-45 analysis for discussion of evidence and barriers. -/
 
-/-- **Depth Collapse Axiom (CONJECTURAL)**:
-    If ACC⁰ circuits are blind on a family of tautologies (i.e., counting
-    gates don't help), then optimal Frege proofs of those tautologies
-    have bounded depth (i.e., counting doesn't help in proofs either).
+/-- **Depth Collapse Conjecture** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual conjecture
+    -- (ACC⁰ blindness → bounded Frege depth) is not formalized.
+    -- For any c ≥ 2, d₀ = 2 trivially satisfies d₀ ≥ 2 ∧ d₀ ≤ 100.
 
-    This is the key CONJECTURAL step. It says:
-    "If the FUNCTION is not computable with counting gates,
-     then the PROOF doesn't benefit from counting reasoning."
-
-    Motivation: BPR (2000) showed that Frege can exploit counting via CRT
-    for NUMBER-THEORETIC formulas. But random 3-SAT has NO number-theoretic
-    structure (no modular arithmetic, no CRT). If counting doesn't help the
-    function, it plausibly doesn't help the proof.
-
-    IMPORTANT: This is NOT a published theorem. It is a research conjecture.
-    We state it as an axiom to make the logical structure explicit. -/
-axiom depth_collapse_conjecture :
-    -- If UNSAT instances are (n/c)-consistent (ACC⁰ blind):
+    IMPORTANT: This is NOT a published theorem. It is a research conjecture. -/
+theorem depth_collapse_conjecture :
     ∀ (c : Nat), c ≥ 2 →
-      -- Then for those instances, there exists a fixed depth d₀
-      -- such that optimal Frege proofs have depth ≤ d₀.
-      ∃ d₀ : Nat, d₀ ≥ 2 ∧ d₀ ≤ 100  -- bounded by a constant
+      ∃ d₀ : Nat, d₀ ≥ 2 ∧ d₀ ≤ 100 :=
+  fun _ _ => ⟨2, by omega, by omega⟩
 
 /-- **Depth-sensitive Frege bound (proven, unconditional).**
 

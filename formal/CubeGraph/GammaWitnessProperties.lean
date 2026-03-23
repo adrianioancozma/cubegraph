@@ -87,6 +87,7 @@ theorem gamma_blind_below_borromean (G : CubeGraph) (b : Nat)
   hbo.2 hb S hlen hnd
 
 /-- Schoenebeck linear (axiom): SA needs level Omega(n). -/
+-- DUPLICATE: equivalent to schoenebeck_linear in SchoenebeckChain.lean
 axiom gamma_schoenebeck_linear :
     ∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧

@@ -317,59 +317,32 @@ theorem structural_projection :
   (b) Proof that restriction + composition commute (or bound)
   (c) Rank analysis of the restricted composition -/
 
-/-- **AXIOM K5.AX1: Bit-Gate Path Modeling**
+/-- **K5.AX1: Bit-Gate Path Modeling** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The conclusion
+    -- `∃ M, rowRank M ≤ 1` is trivially satisfiable (take M = zero matrix).
+    -- The actual claim (bit-level gate = path composition of restricted transfer ops)
+    -- is not formalized.
 
-    CLAIM: For any two variables x_i ∈ cube A, x_j ∈ cube B,
-    the effect of AND(x_i, x_j) = 1 on gap consistency is captured by:
-    (a) restricting A's gaps to x_i-compatible
-    (b) restricting B's gaps to x_j-compatible
-    (c) composing restricted transfer operators along the path A→...→B
-
-    The resulting composed operator has rank ≤ 1.
-
-    WHY THIS MIGHT BE TRUE:
-    - Restriction narrows gaps (proven: restriction_decreases_gaps)
-    - Narrower gaps → lower transfer rank (proven: transferOp_rowRank_le_gapCount)
-    - Rank-1 is absorbing (proven: rowRank_foldl_le_one)
-    - Path composition of length ≥ 6 converges to rank ≤ 1 (experimental)
-
-    WHY THIS MIGHT BE FALSE:
-    - Restriction and composition might NOT commute: restricting after composing
-      could give a DIFFERENT result than composing restricted operators
-    - The rank-1 convergence is for UNRESTRICTED operators; restricted operators
-      might have different behavior
-    - A circuit gate is a GLOBAL operation; projecting it locally might lose
-      information that matters for rank analysis
-
-    STATUS: UNPROVEN. This is the key gap between "local operations → rank ≤ 1"
-    and "circuit gates → rank ≤ 1 on gap structure". -/
-axiom bit_gate_models_path :
+    STATUS: Was UNPROVEN axiom, now trivially proved since conclusion is tautological. -/
+theorem bit_gate_models_path :
     ∀ (G : CubeGraph) (x_i x_j : Nat)
       (A B : Fin G.cubes.length),
       x_i ∈ (G.cubes[A]).vars →
       x_j ∈ (G.cubes[B]).vars →
-      ∃ (M : BoolMat 8), rowRank M ≤ 1
+      ∃ (M : BoolMat 8), rowRank M ≤ 1 :=
+  fun _ _ _ _ _ _ _ => ⟨BoolMat.zero, by rw [rowRank_zero]; omega⟩
 
-/-- **AXIOM K5.AX2: Circuit Rank Bound**
+/-- **K5.AX2: Circuit Rank Bound** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The conclusion
+    -- `∃ M, rowRank M ≤ 1` is trivially satisfiable (take M = zero matrix).
+    -- The actual claim (circuit on gap data → rank ≤ 1) is not formalized.
 
-    CLAIM: Any Boolean circuit (DAG of AND/OR/NOT/fan-out) operating on
-    the bits of a 3-SAT formula, when projected onto CubeGraph gap
-    consistency, produces rank ≤ 1.
-
-    STATUS: CONDITIONAL on K5.AX1. If K5.AX1 is proven, this follows
-    by induction on circuit depth.
-
-    WHY THIS MATTERS:
-    If true: circuit_rank_le_one + Omicron3 → exponential lower bound
-    for ANY Boolean circuit on gap data (not just composition algorithms).
-
-    WHY THIS MIGHT FAIL:
-    The projection model might be too coarse. A circuit might extract
-    information from gap data that is NOT captured by rank analysis. -/
-axiom circuit_rank_le_one :
+    STATUS: Was CONDITIONAL on K5.AX1, now trivially proved. -/
+theorem circuit_rank_le_one :
     ∀ (n : Nat) (G : CubeGraph),
       G.cubes.length ≥ n →
-      ∃ (M : BoolMat 8), rowRank M ≤ 1
+      ∃ (M : BoolMat 8), rowRank M ≤ 1 :=
+  fun _ _ _ => ⟨BoolMat.zero, by rw [rowRank_zero]; omega⟩
 
 /-! ## Part 8: What IS Provable — The Conditional Chain
 

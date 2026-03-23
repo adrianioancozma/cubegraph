@@ -44,6 +44,8 @@ namespace CubeGraph
     Reference:
     - Atserias, Bulatov, Dalmau. ICALP 2007.
     - Atserias, Dalmau. JCSS 74(3), 2008. -/
+-- NOTE: This is weaker than ABD+AD. The actual result (resolution width > k) is
+-- in ABDWidthLowerBound.lean.
 axiom abd_ad_consistency_implies_high_width :
     ∀ (G : CubeGraph) (k : Nat),
       KConsistent G k → ¬ G.Satisfiable →
@@ -191,39 +193,29 @@ theorem axiom_inventory :
 
 /-! ## Section 6: Petke-Jeavons — k-consistency = negative hyper-resolution (Option C) -/
 
-/-- **Petke-Jeavons (2012)**: k-consistency on a CSP is precisely captured by
-    negative hyper-resolution of arity k on the direct Boolean encoding.
-
-    This means: our KConsistent G k is EXACTLY the power of resolution
-    refutations using only clauses derived by resolving ≤ k clauses at a time.
-
-    Consequence: Borromean order b = minimum arity of hyper-resolution needed
-    to refute the formula. At ρ_c: b = Θ(n) → need n-ary hyper-resolution.
+/-- **Petke-Jeavons (2012)** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual Petke-Jeavons result
+    -- (k-consistency = negative hyper-resolution of arity k) is not formalized.
 
     Reference: Petke, Jeavons. "Local Consistency and SAT-Solvers."
     JAIR 43, 2012. -/
-axiom petke_jeavons_consistency_eq_hyperres :
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem petke_jeavons_consistency_eq_hyperres :
     ∀ (G : CubeGraph) (k : Nat),
-      -- k-consistency on CubeGraph = negative hyper-resolution width k
-      -- on the direct Boolean encoding of the associated CSP.
-      -- Formally: KConsistent G k ↔ no hyper-resolution refutation of arity ≤ k.
-      -- Stated weakly: the equivalence exists (content in axiom name + reference).
-      KConsistent G k → KConsistent G k  -- tautological; the axiom name carries the content
+      KConsistent G k → KConsistent G k :=
+  fun _ _ h => h
 
-/-- **Berkholz (2014)**: k-consistency propagation requires Ω(n^{k-1} × d^{k-1})
-    nested steps on binary CSPs with n variables and domain size d.
-
-    For CubeGraph: d = 8 (gap domain), so k-consistency at level k takes
-    Ω(n^{k-1} × 8^{k-1}) = Ω((8n)^{k-1}) propagation steps.
-    With k = Θ(n): propagation time = Ω((8n)^{n/c}) = exponential.
+/-- **Berkholz (2014)** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual Berkholz result
+    -- (k-consistency propagation requires Ω(n^{k-1} × d^{k-1}) steps) is not formalized.
 
     Reference: Berkholz. "The Propagation Depth of Local Consistency."
     CP 2014. -/
-axiom berkholz_propagation_depth :
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem berkholz_propagation_depth :
     ∀ (k : Nat), k ≥ 2 →
-      -- k-consistency requires Ω(n^{k-1}) propagation depth
-      -- (content in axiom name + reference)
-      k ≥ 2
+      k ≥ 2 :=
+  fun _ h => h
 
 /-! ## Section 7: Complete proof complexity connection -/
 

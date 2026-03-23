@@ -376,13 +376,12 @@ theorem scenario_b_trivial (m : Nat) (_ : m ≥ 1)
   - Bounding neg(h) from above is AS HARD AS bounding S_general from below
   - Markov transforms the problem, it does not solve it -/
 
-/-- Razborov-Rudich barrier: natural proof techniques cannot prove
-    superpolynomial general circuit lower bounds (under OWF assumption). -/
-axiom razborov_rudich_barrier :
-    -- Under the assumption that one-way functions exist,
-    -- no natural property can prove superpolynomial circuit lower bounds.
-    -- This is an external citation, not a Lean-verifiable statement.
-    True
+/-- **Razborov-Rudich barrier (1997)** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual Razborov-Rudich result
+    -- is not formalized. See also Nu5LiftingQueryToCircuit.lean for another instance. -/
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem razborov_rudich_barrier :
+    True := trivial
 
 /-! ## Section 10: The Honest Conclusion
 
@@ -490,14 +489,6 @@ def BoolFn.IsAntiMonotone (_ : BoolFn) : Prop := True
 theorem complement_antimonotone (m : Nat) :
     (gapConsistency m).IsAntiMonotone := trivial
 
-/-- An anti-monotone function with ≥ 2 inputs has neg ≥ 1
-    (it must negate somewhere). This is a classical result but
-    does not help for h (which is monotone). -/
-axiom antimonotone_neg_ge_one :
-    ∀ f : BoolFn, f.IsAntiMonotone →
-      f.numInputs ≥ 2 →
-      negComplexity f ≥ 1
-
 /-! ## Appendix: Theorem Census
 
   Theorems proven (0 sorry):
@@ -528,7 +519,6 @@ axiom antimonotone_neg_ge_one :
   4. clique_gen_poly — Alon-Boppana (1987) non-monotone CLIQUE upper bound
   5. clique_gap_256 — concrete instance of CLIQUE gap
   6. razborov_rudich_barrier — Razborov-Rudich (1997) natural proofs
-  7. antimonotone_neg_ge_one — classical (anti-monotone needs negation)
 
   Status: IDEA KILLED. Markov approach is circular.
 -/

@@ -90,20 +90,17 @@ needs at least n^{Ω(k/(c+1))} iterations on SOME instance.
 This applies to CFI graph pairs (Cai-Furer-Immerman construction), NOT to
 arbitrary CSP instances. We state it as an axiom about graph distinguishing. -/
 
-/-- **de Rezende Theorem 2.2 (STOC 2025)** — simplified.
-    For k-WL vs (k+c-1)-WL: there exist graph pairs requiring
-    n^{Omega(k/(c+1))} iterations for the weaker algorithm.
+/-- **de Rezende Theorem 2.2 (STOC 2025)** (placeholder).
+    -- NOTE: This was a tautological axiom placeholder. The actual de Rezende result
+    -- (WL iteration ≥ (2^{-(c+10)} · k^{-3} · n)^{k/(c+1)}) is not formalized.
 
-    This is stated for graph isomorphism, not CSP/SAT directly.
-    The connection to CubeGraph goes through Atserias-Dalmau. -/
-axiom de_rezende_wl_tradeoff :
+    Reference: de Rezende et al. STOC 2025, arXiv:2411.14267. -/
+-- UNUSED AXIOM (dead code) — was tautological, now proved trivially
+theorem de_rezende_wl_tradeoff :
     ∀ (k c : Nat), 1 ≤ c → c ≤ k - 1 → k ≥ 2 →
       ∃ n₀ : Nat, ∀ n ≥ n₀,
-        -- There exist graph pairs where (k+c-1)-WL needs many iterations
-        -- Simplified: iteration count ≥ n (super-linear in graph size)
-        -- Original: ≥ (2^{-(c+10)} · k^{-3} · n)^{k/(c+1)}
-        -- We state the weaker consequence: ≥ n when k/(c+1) ≥ 1
-        True  -- existential on graphs; we use this only for structural analysis
+        True :=
+  fun _ _ _ _ _ => ⟨0, fun _ _ => trivial⟩
 
 /-! ## Section 3: Width-Depth Trade-Off (de Rezende Theorem 1.4)
 

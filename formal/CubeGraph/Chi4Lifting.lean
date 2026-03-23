@@ -254,6 +254,8 @@ theorem interpolant_depth_linear :
 
     This matches the ABD+BSW path in CPLowerBound.lean but via LIFTING,
     not width-size tradeoffs. Two independent proofs of the same result. -/
+-- WARNING: Uses gamma_minFregeSize (Frege size) but claims to follow from
+-- Resolution FIP. Resolution FIP bounds Resolution size, not Frege size.
 axiom resolution_fip_exponential :
     ∃ c : Nat, c ≥ 1 ∧ ∀ (G : CubeGraph),
       ¬ G.Satisfiable →

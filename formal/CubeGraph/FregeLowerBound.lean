@@ -1,25 +1,36 @@
 /-
-  CubeGraph/FregeLowerBound.lean — Frege Near-Quadratic Lower Bound
+  CubeGraph/FregeLowerBound.lean — Frege Lower Bound (CONDITIONAL)
 
-  First super-linear lower bound on general Frege proof size.
+  ⚠️ WARNING: The `frege_simulation` axiom is NOT faithful to the literature.
+  The standard Tseitin/Cook transformation does NOT satisfy the h_sparse and
+  h_aggregate conditions required by `er_kconsistent_from_aggregate`:
+  - h_sparse (gapCount ≥ 7): Tseitin 2-literal clauses padded to 3-SAT produce
+    cubes with only 6 gaps (2 filled vertices in the same quadrant)
+  - h_aggregate (fresh variable per cube): Tseitin extension variables appear in
+    at least 2 cubes (definition + usage as input to parent gate)
 
-  Chain:
-  1. schoenebeck_linear: KConsistent G (n/c₁) on UNSAT G
-  2. frege_simulation: Frege(S) → ER extension with Resolution ≤ c₂·S,
-     extension size ≤ |G| + c₂·S, satisfying h_sparse + h_aggregate
-  3. er_kconsistent_from_aggregate: KConsistent preserved on extension
-  4. bsw_with_formula_size: N · log₂(Resolution size) ≥ k²/c₃
-  5. Combine: (n + c·S) · log₂(c·S) ≥ n²/c'
+  See: experiments-ml/026_2026-03-24_audit/Q3-FREGE-SIMULATION.md (detailed analysis)
+  See: experiments-ml/026_2026-03-24_audit/Q3b-TSEITIN-6GAP.md (impossibility proof)
 
-  Consequence: S > n^a for any a < 2 (first super-linear Frege bound).
-  Equivalently: S = Ω(n²/log n).
+  CONSEQUENCE: `frege_superlinear` and `frege_near_quadratic` are FORMALLY VALID
+  (0 sorry, correct deduction from axioms) but NOT SOUND (the axiom
+  `frege_simulation` does not hold for the standard Tseitin transformation).
+  The claimed Ω(n²/log n) Frege lower bound is NOT established.
 
-  Does NOT prove super-polynomial or P ≠ NP.
+  The deductive chain IS correct:
+  1. schoenebeck_linear: KConsistent G (n/c₁) on UNSAT G      [correct axiom]
+  2. frege_simulation: Frege(S) → ER extension                 [INCORRECT axiom]
+  3. er_kconsistent_from_aggregate: KConsistent preserved       [proven, 0 sorry]
+  4. bsw_with_formula_size_log: BSW in log form                [correct axiom]
+  5. Combine: log₂(c·S) · (c·(n + c·S) + 1) ≥ n²/c'          [valid deduction]
 
-  See: ERLowerBound.lean (ER lower bound via ABD+BSW)
-  See: EFLowerBound.lean (generalized ER with HasCorrectGaps)
-  See: AC0FregeLowerBound.lean (bounded-depth Frege)
-  Plan: experiments-ml/025_2026-03-19_synthesis/bridge/FREGE-SUPERPOLY-PLAN.md
+  The file is kept for:
+  - Documenting the approach and why it fails
+  - The BSW log-form axiom and helper lemmas (useful elsewhere)
+  - Backward compatibility (bsw_with_formula_size as theorem)
+
+  To make this sound, one would need a NON-STANDARD Frege→ER simulation
+  producing cubes with ≥ 7 gaps and fresh variables. No such simulation is known.
 
   References:
   - Ben-Sasson, Wigderson. JACM 48(2), 2001, Corollary 3.6.
@@ -46,19 +57,21 @@ axiom minFregeSize (G : CubeGraph) : Nat
 
 /-! ## Section 2: Frege → Resolution simulation via Tseitin -/
 
-/-- **Tseitin simulation**: A Frege proof of size S can be simulated by
-    Resolution on a Tseitin extension with O(S) new cubes and O(S) proof steps.
+/-- ⚠️ UNSOUND AXIOM — h_sparse and h_aggregate NOT satisfied by standard Tseitin.
 
-    Mechanism:
-    - Each Frege formula decomposed into AND/OR/NOT gates (Tseitin 1968)
-    - Each AND/OR gate: 1 fresh variable + 1 three-literal clause (7 gaps)
-    - Each modus ponens: O(1) Resolution steps on gate variables
-    - Total: O(S) Resolution steps on extension with O(S) new cubes
+    Claims Frege(S) → ER extension with h_sparse (≥7 gaps) + h_aggregate (fresh var).
+    Standard Tseitin produces cubes with 6 gaps (from 2-literal clause padding)
+    and extension variables in ≥2 cubes (definition + parent gate).
 
-    The extension satisfies h_sparse (7 gaps from AND/OR) and h_aggregate
-    (each gate output variable is fresh at its definition level).
+    See Q3-FREGE-SIMULATION.md and Q3b-TSEITIN-6GAP.md for detailed analysis.
+    The obstruction is structural: h_aggregate and h_diff_quadrant are mutually
+    exclusive for Tseitin padded 2-literal clause cubes.
 
-    References: Tseitin (1968), Cook (1975). -/
+    Kept as axiom for: (1) documenting the approach, (2) showing what WOULD
+    be needed (a non-standard simulation), (3) backward compatibility.
+
+    Original references: Tseitin (1968), Cook (1975) — but the h_sparse/h_aggregate
+    claims go BEYOND what these papers establish. -/
 axiom frege_simulation :
     ∃ c : Nat, c ≥ 1 ∧ ∀ (G : CubeGraph),
       ¬ G.Satisfiable →
@@ -72,44 +85,170 @@ axiom frege_simulation :
               (ext.extended.cubes[i]).varAt w_pos ∉ (ext.extended.cubes[j]).vars) ∧
         minResolutionSize ext.extended ≤ c * minFregeSize G
 
-/-! ## Section 3: BSW with explicit formula size -/
+/-! ## Section 3: BSW with explicit formula size (LOG FORM)
 
-/-- **BSW with formula size**: Resolution size bounded in terms of both
-    consistency level k and formula size N (number of cubes).
+  BSW Corollary 3.6 (Ben-Sasson, Wigderson, JACM 2001):
+    For a CNF formula F on n variables with initial clause width w₀,
+    any Resolution refutation of size S has width w satisfying:
 
-    From BSW Corollary 3.6: size ≥ 2^{(w-3)²/n} with n = variables.
-    Combined with ABD+AD: w > k from KConsistent.
+        w >= w(F |- bot) - O(sqrt(n * log S))
 
-    Stated as: size ≥ 2^{k/(c·N)} where N = cubes.length.
-    Weaker than log form but avoids Nat.log2 complications.
-    For N = O(n): gives size ≥ 2^{Ω(1)} (nontrivial).
-    For N = O(k): gives size ≥ 2^{1/c} (weak but nonzero).
+    where w(F |- bot) is the minimum refutation width. Equivalently:
 
-    The REAL content: Resolution size · N ≥ k² (informally).
-    We state it in a form usable for the Frege chain:
-    minResolutionSize G ≥ k * k / (c * G.cubes.length + 1).
+        S >= 2^{(w - w₀)^2 / n}
 
-    References: BSW (2001) Cor. 3.6, ABD+AD (2007/2008). -/
-axiom bsw_with_formula_size :
+    For 3-SAT (w₀ = 3): S >= 2^{(w-3)^2 / n}.
+
+  Combined with ABD+AD (2007/2008): KConsistent G k => refutation width > k.
+
+  Together: KConsistent G k /\ UNSAT => S >= 2^{(k-3)^2 / n} >= 2^{k^2/(c*n)}.
+
+  In LOG form: log₂(S) * (c * n + 1) >= k * k.
+
+  Here n = G.cubes.length (number of cubes = CSP variables in CubeGraph).
+
+  NOTE: The previous version of this axiom used a POLYNOMIAL form:
+    S * (c * N + 1) >= k^2
+  which is strictly weaker (loses the exponential). That form only yielded
+  S >= Omega(n) (linear). The log form yields S >= Omega(n^2 / log n)
+  (genuinely super-linear) via the self-referential Frege argument.
+
+  References: BSW (2001) Cor. 3.6, ABD+AD (2007/2008). -/
+axiom bsw_with_formula_size_log :
     ∃ c : Nat, c ≥ 1 ∧ ∀ (G : CubeGraph) (k : Nat),
       KConsistent G k → ¬ G.Satisfiable →
-      minResolutionSize G * (c * G.cubes.length + 1) ≥ k * k
+      Nat.log2 (minResolutionSize G) * (c * G.cubes.length + 1) ≥ k * k
 
-/-! ## Section 4: Main theorem — self-referential bound -/
+/- OLD AXIOM (polynomial form — strictly weaker, kept for reference):
 
-/-- **Frege Near-Quadratic Lower Bound**: The self-referential inequality
-    relating Frege proof size S to BorromeanOrder.
+  axiom bsw_with_formula_size :
+      ∃ c : Nat, c ≥ 1 ∧ ∀ (G : CubeGraph) (k : Nat),
+        KConsistent G k → ¬ G.Satisfiable →
+        minResolutionSize G * (c * G.cubes.length + 1) ≥ k * k
 
-    States: (n + c·S) · log₂(c·S) ≥ n²/c' where S = minFregeSize G.
+  This followed from BSW but lost the exponential by stating size directly
+  instead of log₂(size). The consequence was only S >= Omega(n) (linear),
+  as the Q1 audit confirmed: S = O(n) satisfies size * (c*N+1) >= k^2.
+-/
 
-    Consequence: S > n^a for any a < 2, i.e., S = Ω(n²/log n).
-    This is the FIRST super-linear lower bound on general Frege. -/
+/-! ## Section 3a: Helper lemmas for Nat.log2 -/
+
+/-- log₂(n) ≤ n for all natural numbers. -/
+private theorem log2_le_self (n : Nat) : Nat.log2 n ≤ n := by
+  rcases n with _ | n
+  · native_decide
+  · have h : n + 1 ≠ 0 := by omega
+    suffices Nat.log2 (n + 1) < n + 2 by omega
+    rw [Nat.log2_lt h]
+    calc n + 1 < 2 ^ (n + 1) := @Nat.lt_two_pow_self (n + 1)
+      _ ≤ 2 ^ (n + 2) := Nat.pow_le_pow_right (by omega) (by omega)
+
+/-- log₂ is monotone: a ≤ b → log₂(a) ≤ log₂(b). -/
+private theorem log2_mono {a b : Nat} (h : a ≤ b) : Nat.log2 a ≤ Nat.log2 b := by
+  rcases Nat.eq_zero_or_pos a with rfl | ha
+  · exact Nat.zero_le _
+  · rcases Nat.eq_zero_or_pos b with rfl | _
+    · omega
+    · rcases Nat.lt_or_ge (Nat.log2 b) (Nat.log2 a) with h_lt | h_ge
+      · have hb_ne : b ≠ 0 := by omega
+        have ha_ne : a ≠ 0 := by omega
+        rw [Nat.log2_lt hb_ne] at h_lt
+        have h_self := Nat.log2_self_le ha_ne
+        omega
+      · exact h_ge
+
+/-! ## Section 3b: Backward compatibility — derive polynomial form from log form -/
+
+/-- **BSW polynomial form** (derived from log form).
+    Since log₂(size) ≤ size, the log-form axiom implies the polynomial form.
+    This is strictly weaker but preserved for backward compatibility with
+    downstream files (Tau2Backward.lean, Epsilon3CubeBSW.lean, etc.). -/
+theorem bsw_with_formula_size :
+    ∃ c : Nat, c ≥ 1 ∧ ∀ (G : CubeGraph) (k : Nat),
+      KConsistent G k → ¬ G.Satisfiable →
+      minResolutionSize G * (c * G.cubes.length + 1) ≥ k * k := by
+  obtain ⟨c, hc, h_log⟩ := bsw_with_formula_size_log
+  exact ⟨c, hc, fun G k hkc hunsat => by
+    have h := h_log G k hkc hunsat
+    -- log₂(minRes) * (c * N + 1) ≥ k²
+    -- log₂(minRes) ≤ minRes
+    -- So: minRes * (c * N + 1) ≥ log₂(minRes) * (c * N + 1) ≥ k²
+    exact Nat.le_trans h (Nat.mul_le_mul_right _ (log2_le_self _))⟩
+
+/-! ## Section 4: Main theorem — self-referential bound (LOG FORM) -/
+
+/-- ⚠️ CONDITIONAL on unsound `frege_simulation` axiom — see file header.
+
+    Self-referential inequality: log₂(c₂·S) · (c₃·(|G| + c₂·S) + 1) ≥ (n/c₁)²
+
+    IF `frege_simulation` were correct, this would imply S = Ω(n²/log n):
+    - S = C·n → log₂(C·n)·(n+C·n) = O(n log n) < Ω(n²). Contradiction.
+    - Therefore S = ω(n), more precisely S = Ω(n²/log n).
+
+    However, `frege_simulation` is NOT faithful to Tseitin/Cook (see Q3 audit).
+    The deduction is formally valid but the conclusion is NOT established. -/
+theorem frege_superlinear :
+    ∃ c₁ c₂ c₃ : Nat, c₁ ≥ 2 ∧ c₂ ≥ 1 ∧ c₃ ≥ 1 ∧ ∀ n ≥ 1,
+      ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable ∧
+        -- Log-form self-referential bound:
+        -- log₂(c₂·S) · (c₃·(|G| + c₂·S) + 1) ≥ (n/c₁)²
+        -- Consequence: S = Omega(n²/log n)
+        Nat.log2 (c₂ * minFregeSize G) *
+          (c₃ * (G.cubes.length + c₂ * minFregeSize G) + 1) ≥
+        (n / c₁) * (n / c₁) := by
+  obtain ⟨c₁, hc₁, h_sch⟩ := schoenebeck_linear
+  obtain ⟨c₂, hc₂, h_sim⟩ := frege_simulation
+  obtain ⟨c₃, hc₃, h_bsw⟩ := bsw_with_formula_size_log
+  refine ⟨c₁, c₂, c₃, hc₁, hc₂, hc₃, fun n hn => ?_⟩
+  obtain ⟨G, hsize, hkc, hunsat⟩ := h_sch n hn
+  refine ⟨G, hsize, hunsat, ?_⟩
+  -- Get the Tseitin extension from Frege simulation
+  obtain ⟨ext, hext_size, hext_sparse, hext_agg, hext_res⟩ := h_sim G hunsat
+  -- KConsistent preserved on extension
+  have hkc_ext := er_kconsistent_from_aggregate G (n / c₁) ext hext_sparse hext_agg hkc
+  -- BSW log form on extension:
+  -- log₂(minRes_ext) * (c₃ · ext.cubes + 1) ≥ (n/c₁)²
+  have h_bsw_ext := h_bsw ext.extended (n / c₁) hkc_ext ext.still_unsat
+  -- From simulation: minRes_ext ≤ c₂ · S
+  have h_res_le : minResolutionSize ext.extended ≤ c₂ * minFregeSize G := hext_res
+  -- From size bound: ext.cubes ≤ |G| + c₂ · S
+  have h_cubes_le : ext.extended.cubes.length ≤ G.cubes.length + c₂ * minFregeSize G :=
+    hext_size
+  -- log₂ is monotone: minRes_ext ≤ c₂·S → log₂(minRes_ext) ≤ log₂(c₂·S)
+  have h_log_le : Nat.log2 (minResolutionSize ext.extended) ≤
+                  Nat.log2 (c₂ * minFregeSize G) :=
+    log2_mono h_res_le
+  -- Second factor monotone: c₃ · ext.cubes + 1 ≤ c₃ · (|G| + c₂·S) + 1
+  have h_rhs : c₃ * ext.extended.cubes.length + 1 ≤
+               c₃ * (G.cubes.length + c₂ * minFregeSize G) + 1 :=
+    Nat.add_le_add_right (Nat.mul_le_mul_left c₃ h_cubes_le) 1
+  -- Step 1: log₂(minRes) * (c₃·ext+1) ≤ log₂(minRes) * (c₃·(|G|+c₂S)+1)
+  have step1 : Nat.log2 (minResolutionSize ext.extended) *
+                 (c₃ * ext.extended.cubes.length + 1) ≤
+               Nat.log2 (minResolutionSize ext.extended) *
+                 (c₃ * (G.cubes.length + c₂ * minFregeSize G) + 1) :=
+    Nat.mul_le_mul_left _ h_rhs
+  -- Step 2: log₂(minRes) * (...) ≤ log₂(c₂·S) * (...)
+  have step2 : Nat.log2 (minResolutionSize ext.extended) *
+                 (c₃ * (G.cubes.length + c₂ * minFregeSize G) + 1) ≤
+               Nat.log2 (c₂ * minFregeSize G) *
+                 (c₃ * (G.cubes.length + c₂ * minFregeSize G) + 1) :=
+    Nat.mul_le_mul_right _ h_log_le
+  -- Combine: (n/c₁)² ≤ log₂(minRes)*(c₃·ext+1)
+  --          ≤ log₂(minRes)*(c₃·(|G|+c₂S)+1) ≤ log₂(c₂S)*(c₃·(|G|+c₂S)+1)
+  exact Nat.le_trans (Nat.le_trans h_bsw_ext step1) step2
+
+/-! ## Section 4a: Backward-compatible weak form -/
+
+/-- **Frege bound (polynomial form)**: backward-compatible version using
+    the polynomial BSW. This is the OLD `frege_near_quadratic` statement.
+    Only implies S >= Omega(n) (linear), NOT super-linear.
+    Kept for downstream compatibility.
+
+    For the genuinely super-linear bound, use `frege_superlinear`. -/
 theorem frege_near_quadratic :
     ∃ c₁ c₂ c₃ : Nat, c₁ ≥ 2 ∧ c₂ ≥ 1 ∧ c₃ ≥ 1 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable ∧
-        -- Self-referential bound: c₂·S · (c₃·(n + c₂·S) + 1) ≥ (n/c₁)²
-        -- Since c₂·S ≥ minRes and (|G|+c₂S) ≥ ext.cubes
-        -- Consequence: S > n^a for any a < 2, i.e., S = Ω(n²/log n)
         c₂ * minFregeSize G * (c₃ * (G.cubes.length + c₂ * minFregeSize G) + 1) ≥
         (n / c₁) * (n / c₁) := by
   obtain ⟨c₁, hc₁, h_sch⟩ := schoenebeck_linear
@@ -118,71 +257,45 @@ theorem frege_near_quadratic :
   refine ⟨c₁, c₂, c₃, hc₁, hc₂, hc₃, fun n hn => ?_⟩
   obtain ⟨G, hsize, hkc, hunsat⟩ := h_sch n hn
   refine ⟨G, hsize, hunsat, ?_⟩
-  -- Get the Tseitin extension from Frege simulation
   obtain ⟨ext, hext_size, hext_sparse, hext_agg, hext_res⟩ := h_sim G hunsat
-  -- KConsistent preserved on extension
   have hkc_ext := er_kconsistent_from_aggregate G (n / c₁) ext hext_sparse hext_agg hkc
-  -- BSW on extension: minRes * (c₃ · ext.cubes + 1) ≥ (n/c₁)²
   have h_bsw_ext := h_bsw ext.extended (n / c₁) hkc_ext ext.still_unsat
-  -- h_bsw_ext : minResolutionSize ext.extended * (c₃ * ext.extended.cubes.length + 1)
-  --             ≥ (n / c₁) * (n / c₁)
-  -- hext_res : minResolutionSize ext.extended ≤ c₂ * minFregeSize G
-  -- hext_size : ext.extended.cubes.length ≤ G.cubes.length + c₂ * minFregeSize G
-  -- Need: minFregeSize G * (c₃ * (|G| + c₂ · S) + 1) ≥ (n/c₁)²
-  -- From: minRes ≤ c₂·S and ext.cubes ≤ |G| + c₂·S:
-  --   minRes * (c₃ · ext.cubes + 1) ≤ c₂·S * (c₃ · (|G| + c₂·S) + 1)
-  --                                   ≤ c₂ · S · (c₃(|G|+c₂S)+1)
-  -- And BSW says: minRes * (c₃·ext.cubes+1) ≥ (n/c₁)²
-  -- So: c₂·S · (c₃(|G|+c₂S)+1) ≥ minRes * (c₃·ext.cubes+1) ≥ (n/c₁)²
-  -- Therefore: S · (c₃(|G|+c₂S)+1) ≥ (n/c₁)² / c₂ ... hmm, dividing by c₂ is ugly
-  -- Better: S * (c₃ * (|G| + c₂*S) + 1) ≥ minRes * (c₃*ext.cubes+1) / c₂
-  -- This doesn't work cleanly. Let me use a different approach.
-  -- Since c₂·S ≥ minRes and (|G|+c₂S) ≥ ext.cubes:
-  --   (c₂·S) * (c₃·(|G|+c₂S)+1) ≥ minRes * (c₃·ext.cubes+1) ≥ (n/c₁)²
-  -- And: S * (c₃·(|G|+c₂S)+1) ≥ (minRes/c₂) * (c₃·ext.cubes+1)
-  -- Hmm, Nat division again.
-  -- Simplest: show LHS ≥ c₂ · minRes * (c₃ · ext.cubes + 1) / c₂ but that's circular
-  -- OK: just show the product is monotone in both factors:
-  --   minFregeSize G ≥ minResolutionSize ext.extended / c₂ (from simulation: minRes ≤ c₂·S)
-  --   No — Nat division, can't go this way.
-  -- DIRECT: minFregeSize G * (c₃*(|G|+c₂*S)+1) ≥ minRes * (c₃*ext.cubes+1)?
-  -- Not directly. minFregeSize G ≤ c₂ * minFregeSize G ≥ minRes... wrong direction.
-  -- The issue: we need minFregeSize G ≥ something, but we only have minRes ≤ c₂·minFregeSize.
-  -- So: minRes ≤ c₂·S → S ≥ minRes/c₂. But Nat division...
-  -- Clean approach: reformulate goal to use c₂*minFregeSize instead
-  -- c₂·S ≥ minRes (from simulation), |G|+c₂S ≥ ext.cubes (from size bound)
-  -- So: c₂S * (c₃·(|G|+c₂S)+1) ≥ minRes * (c₃·ext.cubes+1) ≥ (n/c₁)²
   have h_res_le : minResolutionSize ext.extended ≤ c₂ * minFregeSize G := hext_res
   have h_cubes_le : ext.extended.cubes.length ≤ G.cubes.length + c₂ * minFregeSize G :=
     hext_size
   have h_rhs : c₃ * ext.extended.cubes.length + 1 ≤
                c₃ * (G.cubes.length + c₂ * minFregeSize G) + 1 :=
     Nat.add_le_add_right (Nat.mul_le_mul_left c₃ h_cubes_le) 1
-  -- Step 1: minRes * (c₃·ext.cubes+1) ≤ minRes * (c₃·(|G|+c₂S)+1)
   have step1 : minResolutionSize ext.extended * (c₃ * ext.extended.cubes.length + 1) ≤
                minResolutionSize ext.extended * (c₃ * (G.cubes.length + c₂ * minFregeSize G) + 1) :=
     Nat.mul_le_mul_left _ h_rhs
-  -- Step 2: minRes * (...) ≤ c₂S * (...)
   have step2 : minResolutionSize ext.extended * (c₃ * (G.cubes.length + c₂ * minFregeSize G) + 1) ≤
                c₂ * minFregeSize G * (c₃ * (G.cubes.length + c₂ * minFregeSize G) + 1) :=
     Nat.mul_le_mul_right _ h_res_le
-  -- Combine: (n/c₁)² ≤ minRes*(c₃·ext+1) ≤ minRes*(c₃·(|G|+c₂S)+1) ≤ c₂S*(c₃·(|G|+c₂S)+1)
   exact Nat.le_trans (Nat.le_trans h_bsw_ext step1) step2
 
-/-! ## HONEST ACCOUNTING
+/-! ## HONEST ACCOUNTING (post-audit 2026-03-23)
 
-    What this proves:
-    - (n + c·S) · log₂(c·S) ≥ n²/c for Frege proof size S on n-variable UNSAT
-    - Consequence: S > n^a for any constant a < 2
-    - Equivalently: S = Ω(n²/log n)
-    - FIRST super-linear lower bound on general Frege
+    STATUS: frege_superlinear and frege_near_quadratic are FORMALLY VALID
+    (correct deduction from axioms, 0 sorry) but NOT SOUND because
+    `frege_simulation` is not faithful to the Tseitin/Cook literature.
 
-    What this does NOT prove:
-    - S = super-polynomial (n^{2-ε} is polynomial for fixed ε)
-    - P ≠ NP (would need 2^{Ω(n)})
+    The `frege_simulation` axiom claims h_sparse (≥7 gaps) and h_aggregate
+    (fresh variable), but standard Tseitin produces:
+    - 6 gaps (not 7) for padded 2-literal clause cubes
+    - Extension variables in ≥2 cubes (not fresh)
+    See: Q3-FREGE-SIMULATION.md, Q3b-TSEITIN-6GAP.md
 
-    The barrier: BSW has formula size N in the denominator.
-    Tseitin encoding adds O(S) variables → S appears in denominator →
-    bound self-limits to ≈ n². For 2^{Ω(n)}: need width→size without N. -/
+    What IS sound in this file:
+    - bsw_with_formula_size_log (correct BSW Cor. 3.6 encoding)
+    - bsw_with_formula_size (derived theorem, backward compatible)
+    - log2_le_self, log2_mono (pure math lemmas)
+
+    What is NOT sound:
+    - frege_superlinear (depends on unsound frege_simulation)
+    - frege_near_quadratic (same dependency)
+
+    To fix: need a non-standard Frege→ER simulation satisfying h_sparse + h_aggregate.
+    This is an open research problem in proof complexity. -/
 
 end CubeGraph
