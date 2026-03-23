@@ -18,19 +18,18 @@ namespace CubeGraph
 /-! ## Section 1: Base Cases -/
 
 /-- L1: Empty CubeGraph is satisfiable (vacuously). -/
-theorem sat_of_empty : (⟨[], [], by simp, fun i => Fin.elim0 i⟩ : CubeGraph).Satisfiable :=
-  ⟨Fin.elim0, fun i => Fin.elim0 i, fun _ he => by simp at he⟩
+theorem sat_of_empty : (CubeGraph.mk [] [] (fun _ he => nomatch he) (fun i _ _ _ => Fin.elim0 i)).Satisfiable :=
+  ⟨Fin.elim0, fun i => Fin.elim0 i, fun _ he => nomatch he⟩
 
 /-- L2: A single-cube CubeGraph (no edges) is always satisfiable.
     Any gap of the cube works as a valid selection. -/
 theorem sat_of_single_cube (c : Cube) :
-    (⟨[c], [], by simp, fun i j hij => by
-      have hi := i.isLt; have hj := j.isLt
-      simp only [List.length] at hi hj
-      exact absurd (Fin.ext (by omega)) hij⟩ : CubeGraph).Satisfiable := by
+    (CubeGraph.mk [c] [] (fun _ he => nomatch he) (fun i j _hij => by
+        have hi := i.isLt; have hj := j.isLt
+        simp only [List.length] at hi hj; omega)).Satisfiable := by
   obtain ⟨v, _, hv⟩ := (Cube.gapCount_pos_iff c).mp
     (by have := Cube.gapCount_pos c; omega)
-  refine ⟨fun _ => v, fun i => ?_, fun _ he => by simp at he⟩
+  refine ⟨fun _ => v, fun i => ?_, fun _ he => nomatch he⟩
   revert i; intro ⟨n, hn⟩
   cases n with
   | zero => exact hv
@@ -158,7 +157,8 @@ theorem removeNode_edge_lift (G : CubeGraph) (i : Fin G.cubes.length)
     (a b : Fin (G.removeNode i h_len).cubes.length)
     (he : (a, b) ∈ (G.removeNode i h_len).edges) :
     (removeNodeEmbed G i h_len a, removeNodeEmbed G i h_len b) ∈ G.edges := by
-  simp only [removeNode, List.mem_filterMap] at he
+  unfold removeNode at he
+  rw [List.mem_filterMap] at he
   obtain ⟨⟨e1, e2⟩, he_mem, h_fm⟩ := he
   split at h_fm
   · simp at h_fm
@@ -185,7 +185,7 @@ theorem removeNode_edge_push (G : CubeGraph) (i : Fin G.cubes.length)
     (removeNodeShrink G i h_len e1 hne1,
      removeNodeShrink G i h_len e2 hne2)
     ∈ (G.removeNode i h_len).edges := by
-  simp only [removeNode]
+  unfold removeNode
   rw [List.mem_filterMap]
   refine ⟨(e1, e2), he, ?_⟩
   simp only [dif_neg (show ¬(e1 = i) from hne1), dif_neg (show ¬(e2 = i) from hne2)]

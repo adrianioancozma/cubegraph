@@ -103,3 +103,9 @@ import CubeGraph.EFLowerBound
 import CubeGraph.DepthFregeLowerBound
 import CubeGraph.FregeLowerBound
 import CubeGraph.PolynomialReduction
+import CubeGraph.Alpha5BinomComplete
+import CubeGraph.Eta5NoCancellation
+import CubeGraph.Zeta8GapPreserving
+-- Sigma4SevenSteps not imported here due to pre-existing name collision
+-- (Sigma3Irrationality.honest_gap vs InformationBottleneckComplete.honest_gap).
+-- Build individually: `lake build CubeGraph.Sigma4SevenSteps`

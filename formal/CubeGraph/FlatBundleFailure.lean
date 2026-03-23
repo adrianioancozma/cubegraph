@@ -48,7 +48,8 @@ def FlatConnection (G : CubeGraph) : Prop :=
 /-- h2Graph has flat connection: every edge has compatible gap pairs. -/
 theorem h2_flat_connection : FlatConnection h2Graph := by
   intro e he
-  simp only [h2Graph, List.mem_cons, List.mem_nil_iff, or_false] at he
+  unfold h2Graph at he
+  simp only [List.mem_cons, List.mem_nil_iff, or_false] at he
   rcases he with rfl | rfl | rfl
   · exact ⟨⟨0, by omega⟩, ⟨2, by omega⟩, by native_decide⟩
   · exact ⟨⟨2, by omega⟩, ⟨3, by omega⟩, by native_decide⟩

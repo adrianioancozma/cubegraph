@@ -70,7 +70,8 @@ theorem r1Graph_no_trivial_section : ∀ g : Vertex, ¬ HasTrivialSection r1Grap
 /-- All edges of r1Graph have rank-1 transfer operators. -/
 theorem r1Graph_allRankOne : AllRankOne r1Graph := by
   intro e he
-  simp only [r1Graph, List.mem_cons, List.mem_nil_iff, or_false] at he
+  unfold r1Graph at he
+  simp only [List.mem_cons, List.mem_nil_iff, or_false] at he
   rcases he with rfl | rfl | rfl
   · exact r1_AB_rankOne
   · exact r1_BC_rankOne

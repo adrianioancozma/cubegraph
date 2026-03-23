@@ -128,11 +128,7 @@ theorem h2Graph_unsat : ¬ h2Graph.Satisfiable := by
 /-- The h2Graph has no blocked edges: every edge has a compatible gap pair. -/
 theorem h2Graph_no_blocked : ¬ HasBlockedEdge h2Graph := by
   intro ⟨e, he, hb⟩
-  simp only [h2Graph, List.mem_cons, List.mem_nil_iff, or_false] at he
-  rcases he with rfl | rfl | rfl
-  · exact absurd hb (by native_decide)
-  · exact absurd hb (by native_decide)
-  · exact absurd hb (by native_decide)
+  revert e he hb; decide
 
 /-- **H² WITNESS**: h2Graph is UNSATType2 — the first concrete H² instance in Lean.
     This makes the H² type non-vacuous: global incoherence really exists. -/
@@ -161,18 +157,18 @@ def satCube : Cube where
 def satGraph : CubeGraph where
   cubes := [satCube]
   edges := []
-  edges_valid := by intro e he; simp at he
+  edges_valid := by intro e he; cases he
   edges_complete := by
     intro i j hij
     have hi := i.isLt; have hj := j.isLt
     simp only [List.length] at hi hj
-    exact absurd (Fin.ext (by omega)) hij
+    omega
 
 /-- satGraph is satisfiable: pick gap 0, no edges to violate. -/
 theorem satGraph_satisfiable : satGraph.Satisfiable :=
   ⟨fun _ => ⟨0, by omega⟩,
    fun i => by revert i; native_decide,
-   fun e he => by simp [satGraph] at he⟩
+   fun e he => by cases he⟩
 
 /-! ## Section 8: H¹ Witness -/
 
@@ -381,11 +377,7 @@ theorem r1Graph_unsat : ¬ r1Graph.Satisfiable := by
 /-- r1Graph has no blocked edges. -/
 theorem r1Graph_no_blocked : ¬ HasBlockedEdge r1Graph := by
   intro ⟨e, he, hb⟩
-  simp only [r1Graph, List.mem_cons, List.mem_nil_iff, or_false] at he
-  rcases he with rfl | rfl | rfl
-  · exact absurd hb (by native_decide)
-  · exact absurd hb (by native_decide)
-  · exact absurd hb (by native_decide)
+  revert e he hb; decide
 
 /-- r1Graph is UNSATType2 — a rank-1 H² instance. -/
 theorem r1_h2_witness : UNSATType2 r1Graph :=
@@ -506,10 +498,7 @@ theorem bwGraph_unsat : ¬ bwGraph.Satisfiable := by
 /-- bwGraph has no blocked edges: each edge has at least one compatible pair. -/
 theorem bwGraph_no_blocked : ¬ HasBlockedEdge bwGraph := by
   intro ⟨e, he, hb⟩
-  simp only [bwGraph, List.mem_cons, List.mem_nil_iff, or_false] at he
-  rcases he with rfl | rfl
-  · exact absurd hb (by native_decide)
-  · exact absurd hb (by native_decide)
+  revert e he hb; decide
 
 /-- **H¹·⁵ WITNESS**: acyclic path, no blocked edges, but UNSAT.
     Counterexample to "acyclic + non-blocked → SAT".
