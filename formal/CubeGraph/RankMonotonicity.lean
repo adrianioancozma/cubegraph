@@ -18,7 +18,7 @@
 
   See: RowRank.lean (base: rowRank_mul_le, rowSup_mul_of_rowSup)
   See: BandSemigroup.lean (rank1_idempotent, rank1_aperiodic)
-  See: FlatBundleFailure.lean (T4: monodromy rank ≥ 2, consistent with cycle rotation bound)
+  See: Type2Monodromy.lean (T4: monodromy rank ≥ 2, consistent with cycle rotation bound)
   See: experiments-ml/021_.../T1-RESULTS.md (rank-1 absorbing: λ ≈ 0.87/step, 0% rank-0)
   See: experiments-ml/021_.../T5-PLAN.md (plan)
   See: experiments-ml/021_.../MICRO-MACRO-BRIDGE.md (rank monotonicity = funnel = lossy bridge)

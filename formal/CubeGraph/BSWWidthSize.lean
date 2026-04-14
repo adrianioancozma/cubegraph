@@ -17,9 +17,9 @@
 
   The assembly-ready combined theorem `abd_bsw_combined_exponential` derives
   the old `abd_bsw_resolution_exponential` from ABD + BSW (linear form),
-  with 0 sorry.
+  with .
 
-  **0 sorry. 4 axioms (minResolutionSize + 3 BSW forms). 7 theorems.**
+  **. 4 axioms (minResolutionSize + 3 BSW forms). 7 theorems.**
 
   See: ABDWidthLowerBound.lean (ABD axiom: KConsistent + UNSAT → width > k)
   See: ERLowerBound.lean (uses these to derive er_resolution_lower_bound)
@@ -73,41 +73,25 @@ axiom bsw_width_to_size :
         2 ^ ((minResWidth G - 3) * (minResWidth G - 3) /
              (c * G.cubes.length))
 
-/-! ## Section 3: BSW Width-Size Relation — Linear Form (Theorem 3.2 iterated)
+/- REMOVED (2026-03-24): bsw_width_exponential was an INCORRECT axiom (#11).
 
-  **Refined BSW bound**: Resolution width w implies size ≥ 2^{w/c}.
+   It claimed: size ≥ 2^{w/c} WITHOUT the formula size N in the denominator.
 
-  This follows from BSW 2001 via the random restriction technique
-  (Theorem 3.2). The argument:
+   BSW 2001 always has N in the denominator: size ≥ 2^{(w-3)²/(c·N)}.
+   The argument in Section 3 above (random restriction yielding N-free bound)
+   does NOT actually eliminate N — the restriction probability p = c·w/N
+   means the restricted formula has N' = c·w variables, but the original
+   proof size is only bounded by the RESTRICTED proof size, and the
+   restricted formula's size depends on p·N, creating a circular dependency.
 
-  1. Apply BSW random restriction: fix a random set of (1-p) fraction
-     of variables. With constant probability, the restricted proof has
-     width ≤ w/2 and the restricted formula remains unsatisfiable.
+   The correct axiom is bsw_width_to_size (#10, Section 2) which faithfully
+   states Corollary 3.6 with N = G.cubes.length in the denominator.
 
-  2. The restricted formula has N' = p·N effective variables.
-     By BSW Cor. 3.6 on the restriction: |π'| ≥ 2^{(w/2 - 3)²/N'}.
+   All downstream theorems (abd_bsw_combined_exponential, etc.) have been
+   updated to use the quadratic form from bsw_width_to_size.
 
-  3. The key insight: the restricted proof lives in the original proof.
-     Any clause surviving the restriction is a subset of an original clause.
-     So |π| ≥ |π'|.
-
-  4. Choose p = c·w/N (so N' = c·w). Then:
-     |π'| ≥ 2^{(w/2-3)²/(c·w)} ≥ 2^{w/(c')} for w ≥ 12.
-
-  5. For w < 12: 2^{w/c'} = 2^0 = 1 (for c' ≥ 12), trivially true.
-
-  This gives size ≥ 2^{w/c} WITHOUT the formula size N in the denominator.
-
-  The constant c absorbs the restriction probability, the factor of 3
-  from CubeGraph variables, and the small-width threshold.
-
-  Reference: Ben-Sasson, Wigderson. "Short proofs are narrow — resolution
-  made simple." JACM 48(2), 2001, Theorem 3.2. -/
-
-axiom bsw_width_exponential :
-    ∃ c : Nat, c ≥ 2 ∧ ∀ (G : CubeGraph),
-      ¬ G.Satisfiable →
-      minResolutionSize G ≥ 2 ^ (minResWidth G / c)
+   See: BSWRevived.lean (Section 5: "Why abd_bsw_resolution_exponential
+   cannot be used naively") for analysis of the N-denominator issue. -/
 
 /-! ## Section 4: Helper lemmas -/
 
@@ -123,32 +107,37 @@ private theorem pow2_mono {a b : Nat} (h : a ≥ b) : 2 ^ a ≥ 2 ^ b :=
 
   Result: KConsistent G k + UNSAT → size ≥ 2^{k/c'}.
 
-  This has the SAME form as the old `abd_bsw_resolution_exponential` axiom
-  but is derived from two smaller, independent axioms. -/
+  NOTE (2026-03-24): This formerly derived `abd_bsw_resolution_exponential`
+  (size ≥ 2^{k/c}) from the incorrect axiom `bsw_width_exponential`.
+  Now uses the quadratic form from `bsw_width_to_size` (BSW Cor. 3.6),
+  which includes G.cubes.length in the denominator. -/
 
-/-- **ABD + BSW combined (exponential form)**.
-    k-consistency on UNSAT CubeGraph → size ≥ 2^{k / c}.
+/-- **ABD + BSW combined (exponential form — quadratic exponent)**.
+    k-consistency on UNSAT CubeGraph → size ≥ 2^{(k-2)²/(c·M)}.
 
     Derived from:
-    - ABD: minResWidth G > k (so minResWidth G ≥ k + 1)
-    - BSW linear: size ≥ 2^{minResWidth G / c₂}
-    - Combined: size ≥ 2^{(k+1) / c₂} ≥ 2^{k / c₂}
+    - ABD: minResWidth G > k (so minResWidth G - 3 ≥ k - 2)
+    - BSW quadratic (Cor. 3.6): size ≥ 2^{(minResWidth G - 3)²/(c·M)}
+    - Combined: size ≥ 2^{(k-2)²/(c·M)}
 
-    The constant c = c₂ (from BSW). -/
+    NOTE (2026-03-24): Previously claimed size ≥ 2^{k/c} without the
+    M = G.cubes.length denominator, via the incorrect axiom
+    bsw_width_exponential. The correct BSW bound always has N in
+    the denominator. Downstream users updated accordingly. -/
 theorem abd_bsw_combined_exponential :
-    ∃ c : Nat, c ≥ 2 ∧ ∀ (G : CubeGraph) (k : Nat),
-      KConsistent G k → ¬ G.Satisfiable →
-      minResolutionSize G ≥ 2 ^ (k / c) := by
-  obtain ⟨c₂, hc₂, h_bsw⟩ := bsw_width_exponential
-  refine ⟨c₂, hc₂, fun G k hkc hunsat => ?_⟩
+    ∃ c : Nat, c ≥ 1 ∧ ∀ (G : CubeGraph) (k : Nat),
+      KConsistent G k → ¬ G.Satisfiable → G.cubes.length ≥ 1 →
+      minResolutionSize G ≥
+        2 ^ ((k - 2) * (k - 2) / (c * G.cubes.length)) := by
+  obtain ⟨c, hc, h_bsw⟩ := bsw_width_to_size
+  refine ⟨c, hc, fun G k hkc hunsat hM => ?_⟩
   have h_abd := abd_width_from_kconsistency G k hkc hunsat
-  -- h_abd : minResWidth G > k, i.e., minResWidth G ≥ k + 1
-  have h_size := h_bsw G hunsat
-  -- h_size : minResolutionSize G ≥ 2 ^ (minResWidth G / c₂)
+  have h_size := h_bsw G hunsat hM
   apply Nat.le_trans _ h_size
   apply pow2_mono
-  -- Goal: k / c₂ ≤ minResWidth G / c₂
-  exact Nat.div_le_div_right (by omega : k ≤ minResWidth G)
+  apply Nat.div_le_div_right
+  have hw : minResWidth G - 3 ≥ k - 2 := by omega
+  exact Nat.mul_le_mul hw hw
 
 /-! ## Section 6: BSW with explicit width parameter -/
 
@@ -248,22 +237,20 @@ theorem quadratic_exponent_lower_bound
 
 /-! ## Section 11: Accounting
 
-  NEW AXIOMS (4, all from published literature, all SMALLER than the original):
+  NEW AXIOMS (3, all from published literature):
   1. minResolutionSize G : Nat
      — Minimum Resolution proof size (axiomatic function)
   2. bsw_width_to_size
      — BSW 2001, Cor. 3.6: size ≥ 2^{(w-3)²/(c·M)} [quadratic form]
-  3. bsw_width_exponential
-     — BSW 2001, Thm. 3.2: size ≥ 2^{w/c} [linear form, no formula-size denominator]
-  4. minResWidth (from ABDWidthLowerBound) + abd_width_from_kconsistency
+  3. minResWidth (from ABDWidthLowerBound) + abd_width_from_kconsistency
 
-  The key new axiom is bsw_width_exponential: it eliminates the formula-size
-  denominator from BSW by using the random restriction argument (Thm. 3.2).
-  This is what allows deriving abd_bsw_combined_exponential (= the old
-  abd_bsw_resolution_exponential) purely as a theorem.
+  REMOVED (2026-03-24):
+  - bsw_width_exponential — claimed size ≥ 2^{w/c} WITHOUT formula-size
+    denominator. BSW 2001 always has N in the denominator. See Section 3 comment.
 
-  DERIVED THEOREMS (0 sorry):
-  - abd_bsw_combined_exponential: KConsistent + UNSAT → size ≥ 2^{k/c}
+  DERIVED THEOREMS:
+  - abd_bsw_combined_exponential: KConsistent + UNSAT → size ≥ 2^{(k-2)²/(c·M)}
+    (NOTE: was 2^{k/c}; corrected to include M denominator)
   - abd_bsw_combined_quadratic: KConsistent + UNSAT → size ≥ 2^{(k-2)²/(c·M)}
   - bsw_width_implies_exponential_size: BSW with explicit width bound
   - abd_bsw_interface: packages both axioms

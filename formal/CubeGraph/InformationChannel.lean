@@ -296,7 +296,7 @@ theorem h2_information_gap : InformationGap h2Graph 3 :=
 
     Combines ALL pieces of the informational argument into one statement.
 
-    **PROVEN (Lean, 0 sorry):**
+    **PROVEN (Lean):**
     (A) Rank-1 closed subsemigroup — composition never recovers coordination
     (B) Irreversibility — dead channels stay dead
     (C) Borromean gap — h2Graph: b=3, gap exists
@@ -381,12 +381,12 @@ theorem what_remains_open :
 
     **Layer 2 — Universality + Barrier (other files):**
     (G) Rank decay universal on BoolMat n — not CubeGraph-specific (AbstractCSP)
-    (H) Flat bundle failure — locally consistent, globally UNSAT (Unification)
+    (H) Type 2 UNSAT — locally consistent, globally UNSAT (Unification)
     (I) Borromean gap — structural consistency gap (Unification)
     (J) Barrier Theorem A — C_local class insufficient (BarrierTheorem, 6 components)
 
     **STATUS:**
-    - Lean-proven (0 sorry): A-E, G-J
+    - Lean-proven: A-E, G-J
     - Axiom (1, Schoenebeck 2008): F
     - Empirical (I2 needed): b(n) = Θ(n) at ρ_c
     - Open: DPLL, Resolution, Frege, barrier evasion (R-R, A-W)
@@ -406,19 +406,19 @@ theorem complete_argument :
     -- LAYER 2: Universality
     -- (G) Rank decay universal on BoolMat n (AbstractCSP)
     (∀ n (A B : BoolMat n), rowRank (mul A B) ≤ rowRank A) ∧
-    -- (H) Flat bundle failure (FlatBundleFailure via Unification)
-    (∃ G : CubeGraph, FlatConnection G ∧ ¬ G.Satisfiable) ∧
+    -- (H) Type 2 UNSAT (Type2Monodromy via Unification)
+    (∃ G : CubeGraph, LocallyConsistent G ∧ ¬ G.Satisfiable) ∧
     -- (I) Borromean gap exists (KConsistency via Unification)
     (∃ G : CubeGraph, KConsistent G 2 ∧ ¬ KConsistent G 3) ∧
     -- (J) Barrier Theorem A: C_local class insufficient (BarrierTheorem)
     -- barrier_c_local has 6 components; we include its first 2 here
-    (∃ G : CubeGraph, FlatConnection G ∧ ¬ G.Satisfiable) ∧
+    (∃ G : CubeGraph, LocallyConsistent G ∧ ¬ G.Satisfiable) ∧
     (∃ G k b, BandwidthGap G k b) :=
   ⟨information_gap_theorem,
    rank_decay_is_universal.1,
-   flat_not_implies_sat,
+   locally_consistent_not_implies_sat,
    ⟨h2Graph, h2graph_2consistent, h2graph_not_3consistent⟩,
-   flat_not_implies_sat,
+   locally_consistent_not_implies_sat,
    ⟨h2Graph, 2, 3, h2_bandwidth_gap⟩⟩
 
 /-! ## Section 15: Barrier Evasion Analysis (I3 — informal) -/
@@ -500,15 +500,15 @@ theorem borromean_theta_n :
     time n^{Ω(n)} on random 3-SAT at critical density ρ_c ≈ 4.267.
 
     **Proof structure**:
-    (1) Mechanism (Lean, 0 sorry): rank-1 closed subsemigroup →
+    (1) Mechanism (Lean): rank-1 closed subsemigroup →
         composition cannot create coordination → information gap
     (2) Scaling (Schoenebeck axiom, linear form): b(n) ≥ n/c →
         gap is LINEAR in n → cost is EXPONENTIAL n^{Ω(n)}
-    (3) Witness (Lean, 0 sorry): h2Graph has information gap (b=3)
-    (4) Bound (Lean, 0 sorry): Borromean order ≤ graph size
+    (3) Witness (Lean): h2Graph has information gap (b=3)
+    (4) Bound (Lean): Borromean order ≤ graph size
 
     **Dependencies**: 2 axioms (schoenebeck, schoenebeck_linear).
-    Everything else: Lean-proven, 0 sorry.
+    Everything else: Lean-proven.
 
     **This is NOT P≠NP.** This eliminates SA/consistency/SOS.
     Other algorithm classes (DPLL, Resolution, Frege) are not addressed. -/

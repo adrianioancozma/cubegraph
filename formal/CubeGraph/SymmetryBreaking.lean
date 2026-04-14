@@ -14,7 +14,7 @@
   information through monotone composition. The twist (H²) is invisible
   because the symmetry needed to detect it has been irreversibly destroyed.
 
-  0 sorry. 0 new axioms. All proofs are references to existing theorems.
+  . 0 new axioms. All proofs are references to existing theorems.
 
   See: experiments-ml/025_2026-03-19_synthesis/bridge/CORE-THESIS.md
   See: experiments-ml/025_2026-03-19_synthesis/bridge/FIXED-POINT-ARGUMENT.md

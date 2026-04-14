@@ -42,7 +42,7 @@ def IsWNU3 (n : Nat) (f : Fin n → Fin n → Fin n → Fin n) : Prop :=
 
 /-- A ternary operation preserves a binary relation R:
     R(a₁,b₁) ∧ R(a₂,b₂) ∧ R(a₃,b₃) → R(f(a₁,a₂,a₃), f(b₁,b₂,b₃)). -/
-def PreservesRel (n : Nat) (f : Fin n → Fin n → Fin n → Fin n)
+def PreservesRel3 (n : Nat) (f : Fin n → Fin n → Fin n → Fin n)
     (R : Fin n → Fin n → Bool) : Prop :=
   ∀ a₁ b₁ a₂ b₂ a₃ b₃ : Fin n,
     R a₁ b₁ = true → R a₂ b₂ = true → R a₃ b₃ = true →
@@ -68,7 +68,7 @@ theorem majority2_wnu : IsWNU3 2 majority2 := by
   · intro x y; revert y; revert x; native_decide
 
 /-- Majority preserves ≠ on Fin 2: the algebraic reason 2-coloring is in P. -/
-theorem majority2_preserves_neq : PreservesRel 2 majority2 neq2 := by
+theorem majority2_preserves_neq : PreservesRel3 2 majority2 neq2 := by
   intro a₁ b₁ a₂ b₂ a₃ b₃
   revert a₁ b₁ a₂ b₂ a₃ b₃; native_decide
 
@@ -181,11 +181,11 @@ theorem noWNU3PreservesNeq3_verified : noWNU3PreservesNeq3 = true := by
 /-! ## Section 6: Semantic Bridge (Bool → Prop)
 
   The exhaustive check `noWNU3PreservesNeq3_verified` operates at the Bool level.
-  This section lifts it to Prop: ∀ f, IsWNU3 3 f → ¬PreservesRel 3 f neq3.
+  This section lifts it to Prop: ∀ f, IsWNU3 3 f → ¬PreservesRel3 3 f neq3.
 
   Strategy:
   1. Coverage: any WNU3 on Fin 3 ≡ mkWNU3Direct with its own values
-  2. Bridge: PreservesRel → checkPreservesNeq3 = true
+  2. Bridge: PreservesRel3 → checkPreservesNeq3 = true
   3. Contradiction with exhaustive Bool check -/
 
 /-- Any WNU3 on Fin 3 is extensionally equal to `mkWNU3Direct` instantiated
@@ -232,9 +232,9 @@ private theorem mem_pairs_neq3 (a b : Fin 3)
     neq3 a b = true := by
   revert h a b; native_decide
 
-/-- Bridge: PreservesRel 3 f neq3 implies the Bool check passes. -/
+/-- Bridge: PreservesRel3 3 f neq3 implies the Bool check passes. -/
 theorem preservesRel_implies_check (f : Fin 3 → Fin 3 → Fin 3 → Fin 3)
-    (h : PreservesRel 3 f neq3) : checkPreservesNeq3 f = true := by
+    (h : PreservesRel3 3 f neq3) : checkPreservesNeq3 f = true := by
   simp only [checkPreservesNeq3]
   apply List.all_eq_true.mpr; intro ⟨a₁, b₁⟩ h₁
   apply List.all_eq_true.mpr; intro ⟨a₂, b₂⟩ h₂
@@ -260,19 +260,19 @@ private theorem all_check_false :
     See: experiments-ml/008_2026-03-04_why-h2-hard/CSP-DICHOTOMY.md -/
 theorem no_wnu3_preserves_neq3 :
     ∀ f : Fin 3 → Fin 3 → Fin 3 → Fin 3,
-    IsWNU3 3 f → ¬PreservesRel 3 f neq3 := by
+    IsWNU3 3 f → ¬PreservesRel3 3 f neq3 := by
   intro f hf hpres
   -- Step 1: Coverage — f ≡ mkWNU3Direct with f's own output values
   have hcov := wnu3_coverage f hf
-  -- Step 2: Transfer PreservesRel from f to its mkWNU3Direct representation
-  have hg : PreservesRel 3
+  -- Step 2: Transfer PreservesRel3 from f to its mkWNU3Direct representation
+  have hg : PreservesRel3 3
       (mkWNU3Direct (f 0 0 1) (f 0 0 2) (f 0 1 1) (f 1 1 2) (f 0 2 2) (f 1 2 2)
                     (f 0 1 2) (f 0 2 1) (f 1 0 2) (f 1 2 0) (f 2 0 1) (f 2 1 0))
       neq3 := by
     intro a₁ b₁ a₂ b₂ a₃ b₃ h₁ h₂ h₃
     rw [← hcov a₁ a₂ a₃, ← hcov b₁ b₂ b₃]
     exact hpres a₁ b₁ a₂ b₂ a₃ b₃ h₁ h₂ h₃
-  -- Step 3: Bridge to Bool — PreservesRel implies check = true
+  -- Step 3: Bridge to Bool — PreservesRel3 implies check = true
   have htrue := preservesRel_implies_check _ hg
   -- Step 4: But exhaustive check says check = false for ALL mkWNU3Direct instances
   have hfalse := all_check_false (f 0 0 1) (f 0 0 2) (f 0 1 1) (f 1 1 2)

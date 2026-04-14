@@ -241,7 +241,7 @@ theorem ef_borromean_unconditional (G : CubeGraph) (b : Nat)
 
     Chain: Schoenebeck → KConsistent → HasCorrectGaps preserves → ABD+BSW → 2^{Ω(n)}. -/
 theorem ef_resolution_lower_bound :
-    ∃ c : Nat, c ≥ 1 ∧ ∀ n ≥ 1,
+    ∃ c_k c_s : Nat, c_k ≥ 2 ∧ c_s ≥ 1 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ ¬ G.Satisfiable ∧
         (∀ ext : ERExtension G,
           (∀ i : Fin ext.extended.cubes.length,
@@ -250,17 +250,17 @@ theorem ef_resolution_lower_bound :
                 (∀ j : Fin ext.extended.cubes.length, i ≠ j →
                   (ext.extended.cubes[i]).varAt w_pos ∉ (ext.extended.cubes[j]).vars) ∧
                 HasCorrectGaps (ext.extended.cubes[i]) w_pos) →
-          minResolutionSize ext.extended ≥ 2 ^ (n / c)) := by
+          ext.extended.cubes.length ≥ 1 →
+          minResolutionSize ext.extended ≥
+            2 ^ ((n / c_k - 2) * (n / c_k - 2) /
+                 (c_s * ext.extended.cubes.length))) := by
   obtain ⟨c₁, hc₁, h_sch⟩ := schoenebeck_linear
   obtain ⟨c₂, hc₂, h_abd⟩ := abd_bsw_resolution_exponential
-  refine ⟨c₁ * c₂, by have := Nat.mul_le_mul hc₁ hc₂; omega, fun n hn => ?_⟩
-  obtain ⟨G, hsize, hkc, hunsat⟩ := h_sch n hn
-  refine ⟨G, hsize, hunsat, fun ext h_cor => ?_⟩
-  have hkc_ext := ef_kconsistent_from_correct_gaps G (n / c₁) ext h_cor hkc
-  have hunsat_ext := ext.still_unsat
-  have h := h_abd ext.extended (n / c₁) hkc_ext hunsat_ext
-  rw [Nat.div_div_eq_div_mul] at h
-  exact h
+  exact ⟨c₁, c₂, hc₁, hc₂, fun n hn => by
+    obtain ⟨G, hsize, hkc, hunsat⟩ := h_sch n hn
+    exact ⟨G, hsize, hunsat, fun ext h_cor hM_ext => by
+      have hkc_ext := ef_kconsistent_from_correct_gaps G (n / c₁) ext h_cor hkc
+      exact h_abd ext.extended (n / c₁) hkc_ext ext.still_unsat hM_ext⟩⟩
 
 /-! ## HONEST ACCOUNTING
 

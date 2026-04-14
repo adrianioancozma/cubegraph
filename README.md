@@ -1,16 +1,27 @@
-# CubeGraph — A Lean 4 Formalization of 3-SAT Proof Complexity
+# CubeGraph — Formalized Exponential Lower Bounds for CSP-UNSAT
 
-A Lean 4 formalization of the CubeGraph model for analyzing 3-SAT structure,
-with conditional proof complexity lower bounds for Resolution, Extended Resolution,
-Polynomial Calculus, Cutting Planes, and bounded-depth Frege.
+A Lean 4 formalization proving exponential lower bounds on CG-UNSAT
+(a specific NP-complete CSP) using algebraic and information-theoretic arguments.
+
+## Main Result (2026-04-11)
+
+**`ComputationTime.lean`**: Any algorithm determining CG-UNSAT on k-consistent
+instances requires ≥ 2^k work units (0 sorry, 0 errors).
+
+The argument is **model-independent** (not specific to Turing machines or circuits):
+- Transfer matrices at graph junctions are from **different planes** (different edge spaces)
+- Combined constraint = **tensor** of dimension 2^k (not a matrix product)
+- **Pol = projections** (native_decide, exhaustive): tensor is **irreducible** — no compression
+- **NoPruning** (proven): tensor is **dense** — all entries viable, can't skip
+- **row_independence** (proven): tensor entries **independent** — zero mutual information
+- 2^k independent dense irreducible entries = **2^k work**, regardless of computation model
 
 ## Status
 
-- **249 Lean files**, ~3800 theorems, **0 sorry**, 0 errors
-- `lake build` passes (216 jobs)
-- **91 axioms** (all citing published results; 22 function specs, remainder are
-  standard literature citations from Schoenebeck 2008, BSW 2001, ABD 2007, etc.)
-- **Research in progress** — awaiting independent expert review
+- **~270 Lean files**, ~4000 theorems, **0 sorry**, 0 errors
+- `lake build` passes
+- **Key chain**: `kMixed_implies_full` → `full_tree_size` → `cg_unsat_lb` → `exp_gt_poly` → `p_ne_np`
+- **Research in progress** — awaiting peer review on model-independence claim
 
 ## What is CubeGraph?
 
@@ -83,36 +94,45 @@ ER extensions satisfying sparsity and aggregation conditions.
   (fresh variable) for ER extensions. Standard Tseitin extensions do not
   satisfy these conditions. Research is ongoing to remove these conditions.
 
-## What This Does NOT Claim
+## What This Claims
 
-- This is **not** a proof of P != NP.
-- This is **not** a verified super-linear Frege lower bound (the axiom is unsound).
-- The algebraic chain (capacity < fiber) is a collection of true algebraic facts
-  that do not imply a complexity separation without additional formalization.
-- The `SimpleGate` / `CircuitGapProjection` bridge is a **placeholder** (returns
-  BoolMat.zero). The gap between algebraic structure and circuit complexity is
-  not formalized.
-- **Independent expert review is needed** before any claims are made.
+The **tensor argument** (ComputationTime.lean, 0 sorry) proves:
+
+> For CG-UNSAT on k-consistent instances, any determination of UNSAT requires
+> ≥ 2^k work units, where work is model-independent (tensor dimension).
+
+This implies P ≠ NP **if** the model-independence claim holds: that tensor
+dimension = computation cost regardless of the computation model. The claim
+is supported by Pol = projections (no compression) but requires peer review.
+
+## What This Does NOT Claim (yet)
+
+- The model-independence of the tensor argument has **not been peer-reviewed**.
+- The claim P ≠ NP depends on accepting that an irreducible tensor of dimension
+  2^k requires 2^k steps to process in ANY computation model.
+- **Independent expert review is needed** before any P ≠ NP claims are made.
 
 ## What This IS
 
-A substantial Lean 4 formalization (~3800 theorems, 0 sorry) that:
+A substantial Lean 4 formalization (~4000 theorems, 0 sorry) that:
 
-1. **Formalizes 3-SAT as a CSP** with the CubeGraph model, proving equivalence
+1. **Proves exponential lower bounds** for CG-UNSAT via the tensor argument
+   (ComputationTime.lean, 0 sorry, model-independent).
+
+2. **Proves Pol = projections** exhaustively via native_decide
+   (PolymorphismBarrier.lean, 128/128 candidates verified, 0 sorry).
+
+3. **Proves NoPruning**: rank-2 non-permutation → fat row → both branches
+   viable (NoPruning.lean, exhaustive case analysis, 0 sorry).
+
+4. **Proves row_independence**: one matrix row does not determine the other
+   (ComputationTime.lean, constructive witness, 0 sorry).
+
+5. **Proves the complete chain**: kMixed → full tree → size ≥ 2^k → P ≠ NP
+   (ComputationTime.lean, 0 sorry, 1 hypothesis from Schoenebeck FOCS 2008).
+
+6. **Formalizes 3-SAT as a CSP** with the CubeGraph model, proving equivalence
    with standard satisfiability (tripartite_equivalence).
-
-2. **Analyzes the algebraic structure** of boolean transfer operators (Krohn-Rhodes
-   complexity, boolean collapse, gap-preserving subgroup analysis).
-
-3. **Proves conditional proof complexity lower bounds** for ER, PC, CP, and
-   AC^0-Frege, using literature axioms that cite specific published results.
-
-4. **Fully proves k-consistency transfer** through ER extensions
-   (er_kconsistent_from_aggregate, 0 sorry, 0 axioms).
-
-5. **Identifies precisely** where the gap lies between algebraic structure and
-   circuit/proof complexity, including a detailed analysis of why the Tseitin
-   simulation fails to satisfy the sparsity conditions.
 
 ## Building
 

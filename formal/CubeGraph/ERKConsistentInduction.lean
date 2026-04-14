@@ -3,7 +3,7 @@
 
   Two key results:
   1. kconsistent_extends_to_originals: KConsistent(T(G),k) → KConsistent(G,k)
-     (embed originals into T(G), project back). 0 sorry.
+     (embed originals into T(G), project back). .
   2. er_borromean_unconditional: BorromeanOrder preserved on T(G).
      Uses (1) for ¬KConsistent direction + er_kconsistent_extends for KConsistent direction.
   3. er_exponential_unconditional: ER exponential on large UNSAT CubeGraphs.
@@ -88,9 +88,9 @@ theorem kconsistent_extends_to_originals (G : CubeGraph) (ext : ERExtension G)
 /-! ## Section 3: KConsistent extension (formerly axiom #12, now proven) -/
 
 -- er_kconsistent_from_aggregate (imported from ERKConsistentProof) replaces
--- the former axiom er_sparse_kconsistent_extends. 0 sorry.
+-- the former axiom er_sparse_kconsistent_extends. .
 
-/-! ## Section 4: ER Borromean and Exponential (0 sorry, 0 axioms) -/
+/-! ## Section 4: ER Borromean and Exponential (0 axioms) -/
 
 /-- **ER Borromean**: BorromeanOrder preserved on T(G).
     ¬KConsistent: from kconsistent_extends_to_originals.

@@ -9,14 +9,14 @@
   On h2Graph: BandwidthGap 2 3 (gap = 1, minimal witness).
   At ρ_c (empirical): gap ≈ 3n - 5 = Θ(n) (rank-1 at ~5 steps, b(n) ≈ 3n).
 
-  The bandwidth gap is the QUANTITATIVE measure of "flat bundle failure":
+  The bandwidth gap is the QUANTITATIVE measure of "Type 2 UNSAT":
   locally consistent (k-consistent) but globally UNSAT (not b-consistent).
   Rank decay creates the local blindness. Borromean order creates the global
   requirement. The gap between them is the barrier.
 
   See: KConsistency.lean (KConsistent, h2graph_borromean)
   See: Unification.lean (cubegraph_insufficient_for_sat)
-  See: FlatBundleFailure.lean (flat_bundle_failure)
+  See: Type2Monodromy.lean (locally_consistent_unsat)
   See: experiments-ml/022_.../F4.0-PLAN.md
   See: experiments-ml/022_.../F4-BRAINSTORM-HOT1.md (original idea)
   See: experiments-ml/022_.../theory/CONSISTENCY-LOWER-BOUND.md
@@ -77,7 +77,7 @@ theorem h2_gap_size : bandwidthGapSize 2 3 = 1 := by rfl
 
 /-! ## Section 4: Connection to Unification -/
 
-/-- BandwidthGap + flat bundle + rank decay + aperiodicity:
+/-- BandwidthGap + local consistency + rank decay + aperiodicity:
     the complete picture of why CubeGraph composition fails.
     This is the F4 capstone — connecting bandwidth deficit to
     the structural insufficiency proven in Unification.lean. -/
@@ -85,7 +85,7 @@ theorem bandwidth_and_insufficiency :
     -- Bandwidth gap exists (local OK, global UNSAT)
     (∃ G k b, BandwidthGap G k b) ∧
     -- CubeGraph composition is structurally insufficient (12 facts)
-    (∃ G : CubeGraph, FlatConnection G ∧ ¬ G.Satisfiable) ∧
+    (∃ G : CubeGraph, LocallyConsistent G ∧ ¬ G.Satisfiable) ∧
     -- Combined meaning: the gap between local consistency and global
     -- satisfiability is QUANTIFIABLE and NONZERO.
     -- At ρ_c (empirical): gap = Θ(n) → exponential cost.
@@ -94,7 +94,7 @@ theorem bandwidth_and_insufficiency :
     -- [EXTERNAL] With b = Θ(n): cost = n^{Ω(n)} = exponential
     True :=
   ⟨⟨h2Graph, 2, 3, h2_bandwidth_gap⟩,
-   flat_not_implies_sat,
+   locally_consistent_not_implies_sat,
    trivial⟩
 
 end CubeGraph

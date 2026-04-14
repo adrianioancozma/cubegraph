@@ -127,7 +127,7 @@ theorem monotone_size_exponential :
     - Gap: boolean ≤ integer (multiplicities lost) [IntegerMonodromy]
 
     **Axioms**: 5 total (Schoenebeck, GPW, KW, BSW, GGKS).
-    **Lean-proven**: 0 sorry across all files.
+    **Lean-proven**:  across all files.
 
     **What this does NOT prove**: P ≠ NP.
     Monotone ≠ general circuits. All bounds are on monotone/restricted models.

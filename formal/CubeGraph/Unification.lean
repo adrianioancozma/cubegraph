@@ -36,7 +36,7 @@ open BoolMat
     Categories:
     **A. Rank Decay** — information loss under composition
     **B. Algebraic Saturation** — idempotency, aperiodicity, barrier
-    **C. Flat Bundle Failure** — locally consistent, globally UNSAT
+    **C. Type 2 UNSAT** — locally consistent, globally UNSAT
     **D. Consistency Gap** — Borromean order, soundness
     **E. Algebra Independence** — 𝔹/GF(2)/ℤ/3ℤ all fail, dimension threshold -/
 theorem cubegraph_insufficient_for_sat :
@@ -59,11 +59,11 @@ theorem cubegraph_insufficient_for_sat :
       ∀ B, mul M (mul M B) = mul M B) ∧
     -- C. FLAT BUNDLE FAILURE
     -- C1: Flat connection does NOT imply satisfiability
-    (∃ G : CubeGraph, FlatConnection G ∧ ¬ G.Satisfiable) ∧
-    -- C2: Monodromy is nonzero but traceless (Möbius twist)
-    (¬ isZero h2Monodromy ∧ trace h2Monodromy = false) ∧
+    (∃ G : CubeGraph, LocallyConsistent G ∧ ¬ G.Satisfiable) ∧
+    -- C2: Monodromy is nonzero but traceless (traceless swap)
+    (¬ isZero h2MonodromyCycle ∧ trace h2MonodromyCycle = false) ∧
     -- C3: Monodromy is rank ≥ 2 (not rank-1)
-    (¬ IsRankOne h2Monodromy) ∧
+    (¬ IsRankOne h2MonodromyCycle) ∧
     -- D. CONSISTENCY GAP (Borromean)
     -- D1: 2-consistent but NOT 3-consistent (Borromean number = 3)
     (∃ G : CubeGraph, KConsistent G 2 ∧ ¬ KConsistent G 3) ∧
@@ -73,8 +73,8 @@ theorem cubegraph_insufficient_for_sat :
     -- E1: Same matrix is bool-idempotent but GF(2)-nilpotent
     (∃ M : BoolMat 8, mul M M = M ∧ isZero (xor_mul M M)) ∧
     -- E2: Dimension threshold: k=2 has polymorphism, k=3 does not
-    (∃ f, IsWNU3 2 f ∧ PreservesRel 2 f neq2) ∧
-    (∀ f, IsWNU3 3 f → ¬ PreservesRel 3 f neq3) :=
+    (∃ f, IsWNU3 2 f ∧ PreservesRel3 2 f neq2) ∧
+    (∀ f, IsWNU3 3 f → ¬ PreservesRel3 3 f neq3) :=
   ⟨-- A1: rowRank_foldl_le (RankMonotonicity.lean)
    rowRank_foldl_le,
    -- A2: rowRank_foldl_le_one (RankMonotonicity.lean)
@@ -85,11 +85,11 @@ theorem cubegraph_insufficient_for_sat :
    fun h ht => rank1_idempotent h ht,
    -- B3: idempotence_barrier (IdempotenceBarrier.lean)
    fun h ht B => idempotence_barrier h ht B,
-   -- C1: flat_not_implies_sat (FlatBundleFailure.lean)
-   flat_not_implies_sat,
-   -- C2: h2_monodromy_nonzero + trace_false (FlatBundleFailure.lean)
+   -- C1: locally_consistent_not_implies_sat (Type2Monodromy.lean)
+   locally_consistent_not_implies_sat,
+   -- C2: h2_monodromy_nonzero + trace_false (Type2Monodromy.lean)
    ⟨h2_monodromy_nonzero, h2_monodromy_trace_false⟩,
-   -- C3: h2_monodromy_rank2 (FlatBundleFailure.lean)
+   -- C3: h2_monodromy_rank2 (Type2Monodromy.lean)
    h2_monodromy_rank2,
    -- D1: h2graph_borromean (KConsistency.lean)
    ⟨h2Graph, h2graph_2consistent, h2graph_not_3consistent⟩,

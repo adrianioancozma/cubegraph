@@ -54,7 +54,7 @@ import CubeGraph.NonTransitivity
 import CubeGraph.InducedSubgraph
 import CubeGraph.MisalignedComposition
 import CubeGraph.GeometricReduction
-import CubeGraph.FlatBundleFailure
+import CubeGraph.Type2Monodromy
 import CubeGraph.RankMonotonicity
 import CubeGraph.IdempotenceBarrier
 import CubeGraph.DimensionThreshold
@@ -65,6 +65,7 @@ import CubeGraph.Z3Composition
 import CubeGraph.Unification
 import CubeGraph.BandwidthGap
 import CubeGraph.AbstractCSP
+import CubeGraph.SchoenebeckAxiom
 import CubeGraph.SchoenebeckChain
 import CubeGraph.BarrierTheorem
 import CubeGraph.InformationChannel
@@ -95,6 +96,7 @@ import CubeGraph.ERKConsistentBridge
 import CubeGraph.ERAggregateBricks
 import CubeGraph.ERKConsistentProof
 import CubeGraph.ERKConsistentInduction
+import CubeGraph.ERKConsistent6Gap
 import CubeGraph.ABDWidthLowerBound
 import CubeGraph.BSWWidthSize
 import CubeGraph.ERLowerBound
@@ -105,9 +107,58 @@ import CubeGraph.EFLowerBound
 import CubeGraph.DepthFregeLowerBound
 import CubeGraph.FregeLowerBound
 import CubeGraph.PolynomialReduction
-import CubeGraph.Alpha5BinomComplete
-import CubeGraph.Eta5NoCancellation
-import CubeGraph.Zeta8GapPreserving
+import CubeGraph.BinomComplete
+import CubeGraph.NoCancellation
+import CubeGraph.GapPreservingSubgroup
+import CubeGraph.StellaOctangula
 -- Sigma4SevenSteps not imported here due to pre-existing name collision
 -- (Sigma3Irrationality.honest_gap vs InformationBottleneckComplete.honest_gap).
 -- Build individually: `lake build CubeGraph.Sigma4SevenSteps`
+import CubeGraph.TransferMonoid
+import CubeGraph.T3StarNoGroup
+import CubeGraph.T3StarACC0
+import CubeGraph.FregeStructure
+import CubeGraph.NonAffine
+import CubeGraph.PolymorphismBarrier
+import CubeGraph.StarMatrix
+import CubeGraph.CubeSymmetriesGroup
+import CubeGraph.ComputationalNoether
+import CubeGraph.MonotoneAxioms
+import CubeGraph.BooleanEncoding
+import CubeGraph.MonotoneLowerBound
+import CubeGraph.BoundedDepthFregeBarrier
+import CubeGraph.CutReuse
+import CubeGraph.DistinctCompositions
+import CubeGraph.WidthReuse
+import CubeGraph.MonotoneProofConversion
+import CubeGraph.MPCResolution
+import CubeGraph.GadgetNOR
+import CubeGraph.SufficientLemma
+import CubeGraph.InterpolantMonotone
+import CubeGraph.CPLowerBoundMFI
+import CubeGraph.InterpolantCircuitLB
+import CubeGraph.SemanticBridge
+import CubeGraph.EraseOnlyCollapse
+import CubeGraph.GapPath
+import CubeGraph.FiberSize
+import CubeGraph.MPLossy
+import CubeGraph.MonotoneDepthLB
+import CubeGraph.ContextExplosion
+import CubeGraph.ExtensionExplosion
+import CubeGraph.LabelErasure
+import CubeGraph.AnonymousBranching
+import CubeGraph.InfoIrrecoverable
+import CubeGraph.HierarchyExtended
+import CubeGraph.FullColSup
+import CubeGraph.GapSummary
+import CubeGraph.TheoremX
+import CubeGraph.TreeLikeFrege
+import CubeGraph.ProofComplexityModel
+import CubeGraph.ConditionalMFI
+-- FregeDepthCollapse not imported here due to name collision
+-- (ConditionalMFI.minFregeSize vs FregeLowerBound.minFregeSize).
+-- Build individually: `lake build CubeGraph.FregeDepthCollapse`
+import CubeGraph.RankOrAnd
+-- AugmentationBarrier not imported here due to name collision
+-- (ResolutionFramework.minResWidth vs ABDWidthLowerBound.minResWidth).
+-- Build individually: `lake build CubeGraph.AugmentationBarrier`

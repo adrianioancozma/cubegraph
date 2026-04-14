@@ -22,7 +22,7 @@
   (UNSAT) — exactly the original problem at the meta-level.
   See: FIXED-POINT-ARGUMENT.md
 
-  0 sorry. 0 new axioms.
+  . 0 new axioms.
 
   See: experiments-ml/025_2026-03-19_synthesis/bridge/F1.3-PLAN-ER-AUXILIARY.md
   See: experiments-ml/025_2026-03-19_synthesis/bridge/AUXILIARY-VARIABLES-CANNOT-HELP.md

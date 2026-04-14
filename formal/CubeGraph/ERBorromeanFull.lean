@@ -12,7 +12,7 @@
 
   IF h_kc_extends: → ER exponential → coNP ≠ NP → P ≠ NP.
 
-  0 sorry. 0 new axioms.
+  . 0 new axioms.
 
   See: experiments-ml/025_2026-03-19_synthesis/bridge/BREAKTHROUGH-ER-DEFINITIONS-ONLY.md
 -/
@@ -58,7 +58,7 @@ theorem er_exponential_conditional
 
 /-- **Complete status** in one theorem.
 
-    PROVEN (0 sorry):
+    PROVEN:
     (1) seven_gaps: 1 filled vertex → always ∃ compatible gap (native_decide)
     (2) Inconsistency on originals preserved in T(G)
     (3) er_exponential_conditional: IF h_extends THEN ER exponential

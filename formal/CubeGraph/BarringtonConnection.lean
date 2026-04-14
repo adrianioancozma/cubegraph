@@ -78,8 +78,8 @@ theorem composed_barrier (G : CubeGraph) (seq : CompositionSeq G)
 /-- SAT is NOT determined by any single composition.
     Flat connection (all edges OK) does not imply satisfiability. -/
 theorem sat_not_single_comp :
-    ∃ G : CubeGraph, FlatConnection G ∧ ¬ G.Satisfiable :=
-  flat_not_implies_sat
+    ∃ G : CubeGraph, LocallyConsistent G ∧ ¬ G.Satisfiable :=
+  locally_consistent_not_implies_sat
 
 /-- Coordination required: local consistency ≠ global satisfiability.
     2-consistent but not 3-consistent. -/
@@ -92,7 +92,7 @@ theorem coordination_required :
 /-- **Barrington Connection**: four facts that together show CubeGraph
     composition is structurally insufficient for SAT.
 
-    1. Flat bundle: locally consistent ≠ globally satisfiable
+    1. Type 2 UNSAT: locally consistent ≠ globally satisfiable
     2. Consistency gap: 2-consistent ∧ ¬3-consistent (Borromean)
     3. Aperiodicity: rank-1 products satisfy M³=M² (KR=0, AC⁰)
     4. Idempotency: rank-1 with trace>0 satisfies M²=M (saturation)
@@ -105,7 +105,7 @@ theorem coordination_required :
     Additionally (F2.2, empirical):
     7. KR=1 (ℤ/3ℤ, ACC⁰) also cannot discriminate (Δ<0.01) -/
 theorem barrington_summary :
-    (∃ G : CubeGraph, FlatConnection G ∧ ¬ G.Satisfiable) ∧
+    (∃ G : CubeGraph, LocallyConsistent G ∧ ¬ G.Satisfiable) ∧
     (∃ G : CubeGraph, KConsistent G 2 ∧ ¬ KConsistent G 3) ∧
     (∀ {M : BoolMat 8}, M.IsRankOne →
       mul M (mul M M) = mul M M) ∧

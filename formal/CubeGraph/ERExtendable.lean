@@ -13,7 +13,7 @@
   → ER proof size ≥ 2^{Θ(n)}
   → coNP ≠ NP → P ≠ NP
 
-  0 sorry. 0 new axioms.
+  . 0 new axioms.
 
   See: experiments-ml/025_2026-03-19_synthesis/bridge/BREAKTHROUGH-ER-DEFINITIONS-ONLY.md
 -/

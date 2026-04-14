@@ -21,7 +21,7 @@
   originals EXTENDS to w — IF w's definition doesn't form cycles with
   other auxiliary variables.
 
-  0 sorry. 0 new axioms. The gap is STATED but not bridged.
+  . 0 new axioms. The gap is STATED but not bridged.
 
   See: experiments-ml/025_2026-03-19_synthesis/bridge/F3-PLAN-BORROMEAN-FULL.md
   See: experiments-ml/025_2026-03-19_synthesis/bridge/FIXED-POINT-ARGUMENT.md

@@ -11,7 +11,7 @@
   The gap between "trees → P" and "cycles → NP" is the P vs NP question
   on CubeGraph, reformulated as a fixed point existence problem.
 
-  0 sorry. 0 new axioms. All proofs are references to existing theorems.
+  . 0 new axioms. All proofs are references to existing theorems.
 
   See: experiments-ml/025_2026-03-19_synthesis/bridge/FIXED-POINT-ARGUMENT.md
   See: experiments-ml/025_2026-03-19_synthesis/bridge/CORE-THESIS.md
@@ -19,7 +19,7 @@
 -/
 
 import CubeGraph.Holonomy
-import CubeGraph.FlatBundleFailure
+import CubeGraph.Type2Monodromy
 import CubeGraph.Locality
 import CubeGraph.Rank1Protocol
 
@@ -39,9 +39,9 @@ open BoolMat
     (B) Trees + AC → SAT. Knaster-Tarski: iterate from leaves, converge.
         Fixed point GUARANTEED on acyclic structures. (TreeSAT.lean)
 
-    (C) H² (cycles): flat connection (every edge has compatible pairs)
+    (C) H² (cycles): locally consistent (every edge has compatible pairs)
         but monodromy is TRACELESS (no gap maps to itself around the cycle).
-        Fixed point MISSING. (FlatBundleFailure.lean)
+        Fixed point MISSING. (Type2Monodromy.lean)
 
     The dichotomy: trees → fixed point → P. Cycles → no fixed point → NP. -/
 theorem fixed_point_dichotomy :
@@ -52,12 +52,12 @@ theorem fixed_point_dichotomy :
           ∀ M, IsHolonomyGenerator G base M → M g g = true)
     -- (B) Trees + AC → SAT (Knaster-Tarski: fixed point guaranteed)
     ∧ (∀ G : CubeGraph, IsForest G → AllArcConsistent G → G.Satisfiable)
-    -- (C) H²: flat connection + traceless monodromy + UNSAT
-    ∧ (FlatConnection h2Graph ∧ trace h2Monodromy = false ∧
+    -- (C) H²: local consistency + traceless monodromy + UNSAT
+    ∧ (LocallyConsistent h2Graph ∧ trace h2MonodromyCycle = false ∧
        ¬ h2Graph.Satisfiable) :=
   ⟨sat_common_fixed_point,
    forest_arc_consistent_sat,
-   ⟨h2_flat_connection, h2_monodromy_trace_false, h2Graph_unsat⟩⟩
+   ⟨h2_locally_consistent, h2_monodromy_trace_false, h2Graph_unsat⟩⟩
 
 /-! ## Section 2: Knaster-Tarski Fails on H² -/
 
@@ -73,13 +73,13 @@ theorem fixed_point_dichotomy :
     - But the local fixed point is NOT a global one (monodromy has twist)
     - The twist is invisible to monotone iteration (rank decay: 1+1=1) -/
 theorem knaster_tarski_fails_on_h2 :
-    -- h2Graph: flat connection (every edge has compatible gap pairs)
-    FlatConnection h2Graph
+    -- h2Graph: locally consistent (every edge has compatible gap pairs)
+    LocallyConsistent h2Graph
     -- yet UNSAT (no global fixed point)
     ∧ ¬ h2Graph.Satisfiable
     -- and this is IMPOSSIBLE on trees (Knaster-Tarski works on trees)
     ∧ (∀ G : CubeGraph, IsForest G → AllArcConsistent G → ¬ UNSATType2 G) :=
-  ⟨h2_flat_connection, h2Graph_unsat, h2_requires_cycles⟩
+  ⟨h2_locally_consistent, h2Graph_unsat, h2_requires_cycles⟩
 
 /-! ## Section 3: Borromean Fixed Point Gap -/
 
@@ -127,7 +127,7 @@ theorem borromean_fixed_point_gap :
     leaves, converge monotonically. Cost: O(n). PROVEN.
 
     **NP** (cycles at ρ_c): fixed point MISSING. Monodromy is traceless
-    (twist), but locally everything looks consistent (flat connection).
+    (twist), but locally everything looks consistent (local consistency).
     Borromean gap: local fixed points exist up to b-1 cubes, but not
     at b = Θ(n). Detecting the missing fixed point costs exponential.
 
@@ -138,7 +138,7 @@ theorem borromean_fixed_point_gap :
     5 components:
     (1) SAT = common fixed point of monodromy operators
     (2) Trees → fixed point guaranteed (Knaster-Tarski) → P
-    (3) H² = flat connection + traceless monodromy + UNSAT
+    (3) H² = local consistency + traceless monodromy + UNSAT
     (4) Borromean: local fixed ≠ global fixed, gap = Θ(n)
     (5) H² requires cycles (impossible on trees) -/
 theorem fixed_point_gap_summary :
@@ -150,7 +150,7 @@ theorem fixed_point_gap_summary :
     -- (2) Trees → SAT (Knaster-Tarski)
     ∧ (∀ G : CubeGraph, IsForest G → AllArcConsistent G → G.Satisfiable)
     -- (3) H² = flat + traceless + UNSAT
-    ∧ (FlatConnection h2Graph ∧ trace h2Monodromy = false ∧
+    ∧ (LocallyConsistent h2Graph ∧ trace h2MonodromyCycle = false ∧
        ¬ h2Graph.Satisfiable)
     -- (4) Borromean gap: b = 3, Θ(n) scaling
     ∧ (BorromeanOrder h2Graph 3 ∧
@@ -161,7 +161,7 @@ theorem fixed_point_gap_summary :
     ∧ (∀ G : CubeGraph, IsForest G → AllArcConsistent G → ¬ UNSATType2 G) :=
   ⟨sat_common_fixed_point,
    forest_arc_consistent_sat,
-   ⟨h2_flat_connection, h2_monodromy_trace_false, h2Graph_unsat⟩,
+   ⟨h2_locally_consistent, h2_monodromy_trace_false, h2Graph_unsat⟩,
    ⟨h2_borromean_order, schoenebeck_linear⟩,
    h2_requires_cycles⟩
 

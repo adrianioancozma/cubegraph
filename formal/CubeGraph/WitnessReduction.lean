@@ -94,7 +94,7 @@ theorem hard_instances_with_witness :
 
 /-! ## HONEST ACCOUNTING
 
-    What this file PROVES (0 sorry):
+    What this file PROVES:
     - frege_ge_witness: Frege size ≥ witness circuit / c (from axiom)
     - hard_instances_with_witness: ∃ hard UNSAT instances (from Schoenebeck)
 

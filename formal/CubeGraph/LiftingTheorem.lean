@@ -78,11 +78,11 @@ theorem cubegraph_is_csp :
 
     Combines all components into one theorem:
 
-    **Layer 1 — Decision Tree Lower Bound** (0 sorry, 1 axiom: Schoenebeck):
+    **Layer 1 — Decision Tree Lower Bound** (1 axiom: Schoenebeck):
     DT(CubeGraphSAT) ≥ n/c. Any query algorithm inspecting gap masks
     must inspect ≥ n/c cubes to distinguish SAT from UNSAT.
 
-    **Layer 2 — CSP Decomposition** (0 sorry, 0 axioms):
+    **Layer 2 — CSP Decomposition** (0 axioms):
     CubeGraph SAT = f(masks) on fixed topology. The input has product
     structure (one Fin 256 per cube). Topology preserved under mask changes.
 
@@ -141,7 +141,7 @@ theorem lifting_chain :
     2. GPW (2017): CC(f ∘ g^n) ≥ DT(f) × Ω(log n)
     3. KW (1990): monotone depth = CC of KW game
 
-    **Lean-proven** (0 sorry):
+    **Lean-proven**:
     - Rank decay, rank-1 closed subsemigroup
     - Information loss (boolean↔ℤ gap)
     - Protocol blindness below Borromean

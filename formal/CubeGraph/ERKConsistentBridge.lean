@@ -106,7 +106,7 @@ private theorem list_cases_le_two {α : Type} (l : List α) (h : l.length ≤ 2)
   | [a, b] => exact Or.inr (Or.inr ⟨a, b, rfl⟩)
   | _ :: _ :: _ :: _ => simp [List.length] at h
 
-/-! ## Section 4: L3 — Full bridge (0 sorry) -/
+/-! ## Section 4: L3 — Full bridge -/
 
 /-- **L3**: New cube with gapCount ≥ 7, linkWeight ≤ 2 → always has compatible gap.
     Case split via list_cases_le_two on sharedVars. -/

@@ -101,7 +101,7 @@ theorem boolmat_is_ismat_bool :
     idempotent semirings. The barrier is a property of the CLASS,
     not of the specific instance.
 
-    **For Bool (proven, 0 sorry)**:
+    **For Bool (proven)**:
     (1) rank-1 closed under composition
     (2) list aggregation stays rank-1
     (3) idempotent: M² = M for rank-1 with trace
@@ -212,7 +212,7 @@ theorem rank1_pow_idempotent {n : Nat} (M : BoolMat n) (k : Nat)
 
 /-- **Convergence Summary** — honest accounting.
 
-    **PROVEN (0 sorry)**:
+    **PROVEN**:
     - rank-1 × rank-1 → rank-1 or zero (rank1_closed_under_compose)
     - List of rank-1 → rank-1 or zero (rank1_foldl_preserves)
     - rank-1 idempotent: (M²=M if trace, M²=0 if no trace)
@@ -220,7 +220,7 @@ theorem rank1_pow_idempotent {n : Nat} (M : BoolMat n) (k : Nat)
     - rowRank monotone non-increasing under composition
     - Idempotent semiring: a+a=a for all a (general, not just Bool)
 
-    **NOT PROVEN (sorry or structural observation)**:
+    **NOT PROVEN (structural observation)**:
     - Eventually periodic for general BoolMat powers (needs Fintype/pigeonhole)
     - M^{k+1} = M^k for rank-1 M^k (needs commutativity argument)
     - rowRank = 1 → IsRankOne (bridge lemma, exists but not connected here)
