@@ -6,7 +6,7 @@
   IF a channel becomes dead (rowRank ≤ 1) at any step,
   THEN it stays dead for ALL subsequent steps.
 
-  0 axioms. 0 sorry. Uses only existing theorems.
+  0 axioms. . Uses only existing theorems.
 
   See: D2-SPREADING-COMPRESSION-RESULTS.md (τ_rank ≈ 4 < τ_mix ≈ 13)
   See: RankMonotonicity.lean (rowRank_foldl_le_one)

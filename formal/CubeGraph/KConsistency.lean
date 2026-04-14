@@ -5,7 +5,7 @@
   k-consistency: every subset of ≤ k cubes admits a compatible gap selection.
   Key result: h2Graph is 2-consistent but NOT 3-consistent (b = 3).
 
-  See: FlatBundleFailure.lean (FlatConnection, flat_bundle_failure)
+  See: Type2Monodromy.lean (LocallyConsistent, locally_consistent_unsat)
   See: Hierarchy.lean (UNSATType2, H2_locally_invisible)
   See: RankMonotonicity.lean (rowRank_foldl_le — rank decay formalizes why k-consistency fails)
   See: IdempotenceBarrier.lean (idempotence_barrier — why propagation stagnates)
@@ -17,7 +17,7 @@
   See: experiments-ml/021_.../MICRO-MACRO-BRIDGE.md (k-consistency = local bridge, insufficient)
 -/
 
-import CubeGraph.FlatBundleFailure
+import CubeGraph.Type2Monodromy
 
 set_option maxHeartbeats 400000
 

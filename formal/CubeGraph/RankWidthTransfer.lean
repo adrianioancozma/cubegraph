@@ -170,7 +170,7 @@ theorem unification_chain :
     - BSW: width Ω(n) → follows from Schoenebeck + ABD+AD (this file!)
     - bsw_on_cubegraph: REMOVED (was redundant with schoenebeck_linear)
 
-    **Lean-proven** (0 sorry, across all files):
+    **Lean-proven** (across all files):
     - Rank decay, rank-1 closed, list aggregation
     - Information gap, Borromean witness
     - Protocol blindness, quantitative gap

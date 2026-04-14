@@ -17,7 +17,7 @@
                       = INFORMATION BOTTLENECK THEOREM
 
   Dependencies: 3 axioms (schoenebeck, schoenebeck_linear, braverman_polylog_fools_ac0).
-  Everything else: Lean-proven, 0 sorry.
+  Everything else: Lean-proven.
 
   ELIMINATED classes: AC⁰, ACC⁰, SA/k-consistency/SOS, monotone circuits, C_local.
   NOT eliminated: DPLL, CDCL, Resolution, Extended Resolution, Frege, general circuits.
@@ -167,10 +167,10 @@ theorem classes_eliminated :
        InformationGap h2Graph 3 ∧
        (∀ G : CubeGraph, ∀ b, BorromeanOrder G b → b ≤ G.cubes.length))
     -- (3) C_local barrier: 6-component barrier theorem
-    ∧ (∃ G : CubeGraph, FlatConnection G ∧ ¬ G.Satisfiable) :=
+    ∧ (∃ G : CubeGraph, LocallyConsistent G ∧ ¬ G.Satisfiable) :=
   ⟨borromean_not_ac0,
    sa_lower_bound,
-   flat_not_implies_sat⟩
+   locally_consistent_not_implies_sat⟩
 
 /-! ## Section 3: Idempotent Semiring Universality -/
 
@@ -199,7 +199,7 @@ theorem idempotent_universality :
 
 /-- **Honest gap**: what remains between "classes eliminated" and P ≠ NP.
 
-    ELIMINATED (formal, 0 sorry + 3 axioms):
+    ELIMINATED (formal + 3 axioms):
     - AC⁰ (aperiodic + Braverman)
     - ACC⁰ (ℤ/3ℤ no fixed point)
     - SA / k-consistency / SOS (Schoenebeck + rank-1 mechanism)

@@ -71,12 +71,12 @@ theorem c_local_blind_to_global :
     ∃ G : CubeGraph, KConsistent G 2 ∧ ¬ G.Satisfiable :=
   ⟨h2Graph, h2graph_2consistent, h2Graph_unsat⟩
 
-/-- C_local cannot see: the Möbius twist (traceless monodromy).
+/-- C_local cannot see: the traceless swap (traceless monodromy).
     On h2Graph: all edges nonzero, but monodromy has no fixed point. -/
 theorem c_local_blind_to_mobius :
     ∃ G : CubeGraph,
-      FlatConnection G ∧ ¬ isZero h2Monodromy ∧ trace h2Monodromy = false ∧ ¬ G.Satisfiable :=
-  ⟨h2Graph, h2_flat_connection, h2_monodromy_nonzero, h2_monodromy_trace_false, h2Graph_unsat⟩
+      LocallyConsistent G ∧ ¬ isZero h2MonodromyCycle ∧ trace h2MonodromyCycle = false ∧ ¬ G.Satisfiable :=
+  ⟨h2Graph, h2_locally_consistent, h2_monodromy_nonzero, h2_monodromy_trace_false, h2Graph_unsat⟩
 
 /-! ## Section 4: THE BARRIER THEOREM -/
 
@@ -88,7 +88,7 @@ theorem c_local_blind_to_mobius :
     under any of the 3 tested algebras), you cannot distinguish SAT from UNSAT.
 
     The barrier has 6 components:
-    B1. Flat bundle failure (locally consistent, globally UNSAT)
+    B1. Type 2 UNSAT (locally consistent, globally UNSAT)
     B2. Bandwidth gap (k-consistent but not b-consistent)
     B3. Rank decay universal (any boolean CSP, any dimension)
     B4. Rank-1 absorbing (composition saturates irreversibly)
@@ -98,7 +98,7 @@ theorem c_local_blind_to_mobius :
     Combined: C_local algorithms need n^{Ω(n)} time = EXPONENTIAL. -/
 theorem barrier_c_local :
     -- B1: FLAT BUNDLE FAILURE
-    (∃ G : CubeGraph, FlatConnection G ∧ ¬ G.Satisfiable) ∧
+    (∃ G : CubeGraph, LocallyConsistent G ∧ ¬ G.Satisfiable) ∧
     -- B2: BANDWIDTH GAP (Borromean)
     (∃ G k b, BandwidthGap G k b) ∧
     -- B3: RANK DECAY UNIVERSAL
@@ -115,7 +115,7 @@ theorem barrier_c_local :
     (∀ c : Nat, ∃ n₀ : Nat, ∀ n ≥ n₀,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ KConsistent G c ∧ ¬ G.Satisfiable) :=
   ⟨-- B1
-   flat_not_implies_sat,
+   locally_consistent_not_implies_sat,
    -- B2
    ⟨h2Graph, 2, 3, h2_bandwidth_gap⟩,
    -- B3

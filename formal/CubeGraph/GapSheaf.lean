@@ -6,7 +6,7 @@
     F(cube c) = { g ∈ Fin 8 : c.isGap g = true }    (stalk)
     F(edge e) = { (g₁,g₂) : transferOp(c₁,c₂,g₁,g₂) = true }  (edge stalk)
 
-  Main results (0 sorry):
+  Main results:
   - Stalk non-emptiness (from gaps_nonempty)
   - Edge stalk empty ↔ blocked edge
   - Global section ↔ Satisfiable (tautologic reformulation)

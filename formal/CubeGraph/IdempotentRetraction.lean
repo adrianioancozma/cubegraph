@@ -46,7 +46,7 @@ def HasCoherentRetractions (junctions : List (List (BoolMat n) × List (BoolMat 
     IsCoherentRetraction R j.1 j.2
 
 -- ============================================================
---  Basic lemmas (all trivial, 0 sorry)
+--  Basic lemmas (all trivial)
 -- ============================================================
 
 /-- The identity matrix is idempotent: I² = I -/

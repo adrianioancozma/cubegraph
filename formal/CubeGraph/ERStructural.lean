@@ -13,7 +13,7 @@
   The MISSING piece (Phase 3): does T(G) preserve Borromean order on
   the FULL graph (originals + new cubes)? That is the gap.
 
-  0 sorry. 0 new axioms.
+  . 0 new axioms.
 
   See: experiments-ml/025_2026-03-19_synthesis/bridge/FIXED-POINT-ARGUMENT.md
   See: experiments-ml/025_2026-03-19_synthesis/bridge/F2.1-PLAN-ER-STRUCTURAL.md

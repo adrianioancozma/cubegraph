@@ -10,7 +10,7 @@
 
   See: BandSemigroup.lean (rank1_idempotent, rank1_nilpotent)
   See: RankMonotonicity.lean (rowRank_foldl_le_one — rank-1 absorbing)
-  See: FlatBundleFailure.lean (flat bundle enabled by idempotent trace > 0)
+  See: Type2Monodromy.lean (local consistency enabled by idempotent trace > 0)
   See: experiments-ml/021_.../T1-RESULTS.md (band vs nilpotent empiric)
   See: experiments-ml/021_.../T6-PLAN.md (plan)
   See: experiments-ml/021_.../MICRO-MACRO-BRIDGE.md (idempotence = bridge saturates)

@@ -159,7 +159,7 @@ theorem er_lower_bound :
 
 /-- **ER Invariance Summary**: The complete argument.
 
-    **PROVEN (0 sorry)**:
+    **PROVEN**:
     - ER definitions add cubes with NEW variables only
     - KConsistent on original cubes is IDENTICAL with/without ER
     - Borromean order on originals is preserved
@@ -178,7 +178,7 @@ theorem er_lower_bound :
     The gap between "Borromean on originals preserved" and
     "ER requires exponential size" remains OPEN. -/
 theorem er_invariance_summary :
-    -- KConsistent invariance (proven, 0 sorry)
+    -- KConsistent invariance (proven)
     (∀ (G : CubeGraph) (k : Nat), KConsistent G k →
       ∀ (S : List (Fin G.cubes.length)), S.length ≤ k → S.Nodup →
         ∃ s : (i : Fin G.cubes.length) → Vertex,
@@ -186,7 +186,7 @@ theorem er_invariance_summary :
           (∀ e ∈ G.edges, e.1 ∈ S → e.2 ∈ S →
             transferOp (G.cubes[e.1]) (G.cubes[e.2])
               (s e.1) (s e.2) = true))
-    -- Borromean preserved (proven, 0 sorry)
+    -- Borromean preserved (proven)
     ∧ (∀ (G : CubeGraph) (b : Nat),
         BorromeanOrder G b → ¬ KConsistent G b ∧ (b > 0 → KConsistent G (b - 1)))
     -- Width = Ω(n) on originals (from existing axioms)

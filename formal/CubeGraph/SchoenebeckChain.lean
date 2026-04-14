@@ -23,6 +23,7 @@
 -/
 
 import CubeGraph.AbstractCSP
+import CubeGraph.SchoenebeckAxiom
 
 namespace CubeGraph
 
@@ -73,10 +74,12 @@ axiom schoenebeck :
     yields b(n) = Θ(n). The exponential cost n^{Ω(n)} follows.
 
     Schoenebeck (2008), Theorem 1.1 + Atserias-Dalmau (2008). -/
-axiom schoenebeck_linear :
+-- DEDUP: derived from schoenebeck_linear_axiom in SchoenebeckAxiom.lean
+theorem schoenebeck_linear :
     ∃ c : Nat, c ≥ 2 ∧ ∀ n ≥ 1,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧
-        KConsistent G (n / c) ∧ ¬ G.Satisfiable
+        KConsistent G (n / c) ∧ ¬ G.Satisfiable :=
+  schoenebeck_linear_axiom
 
 /-! ## Section 3: Combined Theorem -/
 
@@ -107,14 +110,14 @@ theorem consistency_insufficient :
 
     The MECHANISM is new. The LOWER BOUND is Schoenebeck's. -/
 theorem geometric_mechanism_plus_schoenebeck :
-    -- Our geometric mechanism (12 facts, 0 sorry, Lean-proven)
-    (∃ G : CubeGraph, FlatConnection G ∧ ¬ G.Satisfiable) ∧
+    -- Our geometric mechanism (12 facts, Lean-proven)
+    (∃ G : CubeGraph, LocallyConsistent G ∧ ¬ G.Satisfiable) ∧
     (∃ G : CubeGraph, KConsistent G 2 ∧ ¬ KConsistent G 3) ∧
     (∃ G k b, BandwidthGap G k b) ∧
     -- Schoenebeck's lower bound (axiom/citation)
     (∀ c : Nat, ∃ n₀ : Nat, ∀ n ≥ n₀,
       ∃ G : CubeGraph, G.cubes.length ≥ n ∧ KConsistent G c ∧ ¬ G.Satisfiable) :=
-  ⟨flat_not_implies_sat,
+  ⟨locally_consistent_not_implies_sat,
    ⟨h2Graph, h2graph_2consistent, h2graph_not_3consistent⟩,
    ⟨h2Graph, 2, 3, h2_bandwidth_gap⟩,
    schoenebeck⟩
@@ -123,7 +126,7 @@ theorem geometric_mechanism_plus_schoenebeck :
 
 /-- NOTE: This file does NOT prove P ≠ NP.
 
-    What IS proven (Lean, 0 sorry + 1 axiom):
+    What IS proven (Lean + 1 axiom):
     - SA/consistency algorithms need level Ω(n) → cost n^{Ω(n)}
     - The geometric mechanism (rank decay + bandwidth gap) explains WHY
 
