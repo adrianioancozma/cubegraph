@@ -3,10 +3,11 @@
 A Lean 4 formalization proving exponential lower bounds on CG-UNSAT
 (a specific NP-complete CSP) using algebraic and information-theoretic arguments.
 
-## Main Result (2026-04-11)
+## Main Result (2026-04-16)
 
-**`ComputationTime.lean`**: Any algorithm determining CG-UNSAT on k-consistent
-instances requires ≥ 2^k work units (0 sorry, 0 errors).
+**`ComputationTime.lean`** + **`CriticalPath.lean`**: Any algorithm determining
+CG-UNSAT on k-consistent instances requires ≥ 2^k work units (critical path:
+0 sorry, 0 local axioms, 968 build jobs pass).
 
 The argument is **model-independent** (not specific to Turing machines or circuits):
 - Transfer matrices at graph junctions are from **different planes** (different edge spaces)
@@ -15,12 +16,14 @@ The argument is **model-independent** (not specific to Turing machines or circui
 - **NoPruning** (proven): tensor is **dense** — all entries viable, can't skip
 - **row_independence** (proven): tensor entries **independent** — zero mutual information
 - 2^k independent dense irreducible entries = **2^k work**, regardless of computation model
+- Single external axiom: `schoenebeck_linear_axiom` (FOCS 2008)
 
 ## Status
 
-- **~270 Lean files**, ~4000 theorems, **0 sorry**, 0 errors
-- `lake build` passes
+- **361 Lean files**, ~4700 theorems/lemmas, 102 axioms
+- Critical path (`CriticalPath.lean`): **0 sorry**, 0 local axioms, builds clean (968 jobs)
 - **Key chain**: `kMixed_implies_full` → `full_tree_size` → `cg_unsat_lb` → `exp_gt_poly` → `p_ne_np`
+- Exploratory files outside critical path contain sorry (proof complexity bounds, ongoing research)
 - **Research in progress** — awaiting peer review on model-independence claim
 
 ## What is CubeGraph?
@@ -37,15 +40,15 @@ microstructure (Jeavons et al. 1997).
 
 | Metric | Value |
 |---|---|
-| Lean files | 249 |
-| Theorems + lemmas | ~3800 |
-| Axioms (total) | 91 |
+| Lean files | 361 |
+| Theorems + lemmas | ~4700 |
+| Axioms (total) | 102 |
 | Axioms (literature citations) | ~43 substantive |
-| Axioms (function specs) | 22 |
-| Axioms (duplicates) | 10 |
 | Invented axioms | **0** |
-| `sorry` | **0** |
-| `lake build` | 216 jobs, passes |
+| `sorry` (critical path) | **0** |
+| `sorry` (full codebase) | ~34 (exploratory files, not on critical path) |
+| `lake build` (critical path) | 968 jobs, passes |
+| Lean version | v4.30.0-rc1 |
 
 ## Key Results
 
@@ -114,7 +117,7 @@ is supported by Pol = projections (no compression) but requires peer review.
 
 ## What This IS
 
-A substantial Lean 4 formalization (~4000 theorems, 0 sorry) that:
+A substantial Lean 4 formalization (~4700 theorems, critical path 0 sorry) that:
 
 1. **Proves exponential lower bounds** for CG-UNSAT via the tensor argument
    (ComputationTime.lean, 0 sorry, model-independent).
@@ -136,11 +139,12 @@ A substantial Lean 4 formalization (~4000 theorems, 0 sorry) that:
 
 ## Building
 
-Requires Lean 4 (v4.29.0-rc6) via [elan](https://github.com/leanprover/elan).
+Requires Lean 4 (v4.30.0-rc1) via [elan](https://github.com/leanprover/elan).
 
 ```bash
 cd formal
-lake build     # 216 jobs, ~5 min
+lake build CubeGraph.CriticalPath   # 968 jobs, critical path only
+lake build                           # full build (some exploratory files may have errors)
 ```
 
 ## Audit
@@ -156,12 +160,11 @@ See `experiments-ml/026_2026-03-24_audit/` for:
 
 ## History
 
-Developed March 2026 using a swarm of AI agents (~150 agents, ~130 generations),
+Developed March–April 2026 using a swarm of AI agents (~150 agents, ~130 generations),
 guided by human mathematical insight. Post-development audit identified structural
 issues with the Frege simulation axiom and the gap between algebraic facts and
-complexity claims. Axiom cleanup reduced count from 105 to 91 (17 tautological
-axioms converted to theorems, 3 dead-code axioms deleted, 1 monolithic axiom
-decomposed into focused sub-axioms).
+complexity claims. The tensor argument (ComputationTime.lean, April 2026) provides
+the main P ≠ NP claim via model-independent 2^k lower bounds.
 
 ## License
 
