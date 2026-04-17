@@ -36,6 +36,18 @@ git commit -m "update: $(date +%Y-%m-%d) — description"
 git push origin main
 ```
 
+### 4. Verify empirical results
+
+```bash
+cd /home/adrian/dev/adrian/p-vs-np/PUBLISH/src
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python scripts/verify_failure_patterns.py
+```
+
+Expected: ratio = 1.0000 on all instances.
+
 ## Important rules
 
 - **README.md** in PUBLISH root is SEPARATE from formal/README.md

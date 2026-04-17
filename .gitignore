@@ -1,2 +1,5 @@
 sync.sh
 formal/.lake/
+
+# Python venv
+src/.venv/
