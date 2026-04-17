@@ -68,7 +68,7 @@ private theorem pow2_gt_quadratic (c : Nat) (hc : c ≥ 5) :
 
 /-- 2^{4c²+1} > (16c²+4)^c for c ≥ 1.
     Cases 1-4 by norm_num; c ≥ 5 by pow2_gt_quadratic + monotonicity. -/
-private theorem exp_gt_poly (c : Nat) (hc : c ≥ 1) :
+theorem exp_gt_poly (c : Nat) (hc : c ≥ 1) :
     2 ^ (4 * c * c + 1) > (16 * c * c + 4) ^ c := by
   by_cases hc5 : c ≥ 5
   · have h1 : (16 * c * c + 4) ^ c < (2 ^ (2 * c)) ^ c :=
