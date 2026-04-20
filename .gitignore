@@ -4,3 +4,4 @@ formal/.lake/
 # Python venv
 src/.venv/
 HOW-TO-PUBLISH.md
+texput.log

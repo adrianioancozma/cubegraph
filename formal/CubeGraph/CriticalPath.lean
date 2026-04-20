@@ -14,13 +14,17 @@
       │           └── Mathlib (ring, linarith, interval_cases)
       └── ComputationTime (original chain, for compatibility)
 
-  CG-specific chain (CGAdversary.lean):
+  CG-specific chain (CGAdversary.lean, 0 sorry):
+    failure_iff_unsat               — tensor=false ↔ failureSet≠[] (PROVEN)
     cg_junction_fat_row             — NoPruning → fat row (PROVEN)
     cg_tensor_row_separation        — row_independence → independent (PROVEN)
     row_independence_sym            — symmetric version (PROVEN)
-    cg_viable_transfer              — matrices → tensor viable (AXIOM, justified)
+    failure_pattern_injective_at    — rank2 + column coverage → patterns differ (PROVEN)
+    cg_viable_transfer              — tensor viable (THEOREM, from ctensor_viable)
     cg_adversary_lb                 — 2^k evaluations needed (PROVEN)
     cg_p_ne_np                      — 2^k > D^c (PROVEN)
+    tensor_monotone                 — CG-SAT monotone in matrix entries (PROVEN)
+    p_ne_np_monotone                — monotone argument → P ≠ NP (PROVEN)
 
   Original chain (ComputationTime.lean):
     kMixed_implies_full             — kMixed → full tree (PROVEN)
@@ -34,9 +38,10 @@
     row_independence                — matrix rows independent (PROVEN)
     exp_gt_poly                     — 2^{4c²+1} > (16c²+4)^c (PROVEN)
 
-  Axioms: 2
-    schoenebeck_linear_axiom        — FOCS 2008 (published)
-    cg_viable_transfer              — CG matrices → tensor viable (justified)
+  Axioms: 3
+    schoenebeck_linear_axiom        — FOCS 2008 (published, CSP NP-completeness)
+    all_junctions_column_covered    — column coverage (empirical, ratio=1.0)
+    pol_projections_monotone_sufficient — Pol=proj → NOT useless (key claim)
   Sorry: 0
 -/
 

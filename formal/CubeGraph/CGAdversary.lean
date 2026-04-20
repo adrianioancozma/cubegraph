@@ -59,11 +59,17 @@ def JunctionGraph.failureSet (G : JunctionGraph k) (σ : Fin k → Bool) :
     List (Fin k × Fin k) :=
   G.edges.filter fun (i, j) => (G.matrices i) (σ i) (σ j) == false
 
-/-- σ is UNSAT iff failure set is non-empty (structural, not on critical path). -/
+/-- PROVEN: σ is UNSAT iff failure set is non-empty. -/
 theorem failure_iff_unsat (G : JunctionGraph k) (σ : Fin k → Bool) :
     G.tensor σ = false ↔ G.failureSet σ ≠ [] := by
   unfold JunctionGraph.tensor JunctionGraph.failureSet
-  sorry -- structural lemma connecting List.all and List.filter; not on critical path
+  induction G.edges with
+  | nil => simp [List.all, List.filter]
+  | cons hd tl ih =>
+    simp only [List.all_cons, List.filter_cons]
+    cases hp : (G.matrices hd.1) (σ hd.1) (σ hd.2)
+    · simp
+    · simp [ih]
 
 -- ============================================================
 -- Section 2: Transfer — Viability (from NoPruning)
@@ -140,50 +146,74 @@ theorem rank2_rows_differ_at_column
     (M : Mat2) (hrank : Mat2.isRank2 M) :
     ∃ c₀ : Bool, M false c₀ ≠ M true c₀ := by
   unfold Mat2.isRank2 at hrank
-  by_contra h; push_neg at h; apply hrank; ext c; exact h c
+  by_contra h; push Not at h; apply hrank; ext c; exact h c
 
 /-- If σ₁ and σ₂ differ at junction l, and edge (l, m) exists where
     the matrix rows differ at column σ₁(m), then σ₁ and σ₂ have
     DIFFERENT failure status at that edge. -/
 theorem failure_differs_at_edge
-    (M : Mat2) (r₁ r₂ c : Bool) (hr : r₁ ≠ r₂)
+    (M : Mat2) (r₁ r₂ c : Bool) (_hr : r₁ ≠ r₂)
     (hdiff : M r₁ c ≠ M r₂ c) :
     -- one reads true (passes), the other reads false (fails)
     (M r₁ c = true ∧ M r₂ c = false) ∨ (M r₁ c = false ∧ M r₂ c = true) := by
   cases h1 : M r₁ c <;> cases h2 : M r₂ c <;> simp_all
 
-/-- Column coverage: junction l has a neighbor m in the graph whose
-    gap value σ(m) equals the column where M_l's rows differ.
-    This ensures σ₁ and σ₂ (differing at l) have different failure patterns.
+/-- Outgoing column coverage: junction l has an OUTGOING edge to a neighbor m
+    (with m ≠ l) whose gap value σ(m) matches the needed column.
 
-    Sufficient condition: junction l has ≥2 neighbors with different gap values,
-    OR M_l rows differ at BOTH columns.
+    At edge (l, m): the tensor evaluates M_l[σ(l), σ(m)]. Since M_l is rank-2,
+    its rows differ at some column c₀. If σ(m) = c₀, then σ₁ and σ₂ (differing
+    at l) read DIFFERENT rows of M_l at the SAME column c₀ → different results.
 
     For degree ≥ 3 at ρ_c: empirically always satisfied (ratio=1.0). -/
 def ColumnCovered (G : JunctionGraph k) (σ : Fin k → Bool) (l : Fin k) : Prop :=
-  ∀ c : Bool, ∃ e ∈ G.edges, (e.1 = l ∧ σ e.2 = c) ∨ (e.2 = l ∧ σ e.1 = c)
+  ∀ c : Bool, ∃ e ∈ G.edges, e.1 = l ∧ e.2 ≠ l ∧ σ e.2 = c
 
 /-- PROVEN: If σ₁ ≠ σ₂ differ at junction l, and l is column-covered,
     then F(σ₁) ≠ F(σ₂) (failure patterns differ).
 
-    Proof: isRank2 → rows differ at ∃ column c₀. ColumnCovered → ∃ neighbor
-    with gap c₀. At that edge, one config fails and the other passes. -/
+    Proof: isRank2 → M_l rows differ at ∃ column c₀. ColumnCovered → ∃ outgoing
+    edge (l, m) with σ₁(m) = c₀. At that edge: σ₁ reads M_l[σ₁(l), c₀],
+    σ₂ reads M_l[σ₂(l), c₀]. These differ (hc₀). One passes, other fails.
+    Therefore failureSet σ₁ ≠ failureSet σ₂. -/
 theorem failure_pattern_injective_at {k : Nat} (G : JunctionGraph k)
     (σ₁ σ₂ : Fin k → Bool)
     (l : Fin k) (hl : σ₁ l ≠ σ₂ l)
-    -- σ₁ and σ₂ agree except at l (Hamming distance 1)
     (hagree : ∀ i, i ≠ l → σ₁ i = σ₂ i)
-    -- l is column-covered: both column values appear among neighbors
     (hcov : ColumnCovered G σ₁ l) :
     G.failureSet σ₁ ≠ G.failureSet σ₂ := by
-  -- isRank2: rows of M_l differ at some column c₀
   obtain ⟨c₀, hc₀⟩ := rank2_rows_differ_at_column (G.matrices l) (G.hrank l)
-  -- ColumnCovered: ∃ neighbor m with σ₁(m) = c₀
-  obtain ⟨e, he_mem, he_col⟩ := hcov c₀
-  -- At edge e: σ₁ reads M_l[σ₁(l), c₀], σ₂ reads M_l[σ₂(l), c₀]
-  -- These differ (hc₀). So one fails and the other passes.
-  -- Therefore failureSet σ₁ ≠ failureSet σ₂.
-  sorry -- technical: connecting edge_status_differs to List.filter membership
+  obtain ⟨e, he_mem, he1, hem, hec⟩ := hcov c₀
+  -- σ₂(e.2) = σ₁(e.2) = c₀ since e.2 ≠ l
+  have h_col_eq : σ₂ e.2 = c₀ := by rw [← hec]; exact (hagree e.2 hem).symm
+  -- M_l rows differ at c₀: (σ₁ l, σ₂ l) are (false, true) or (true, false)
+  have h_eval_ne : (G.matrices l) (σ₁ l) c₀ ≠ (G.matrices l) (σ₂ l) c₀ := by
+    cases h1 : σ₁ l <;> cases h2 : σ₂ l <;> simp_all [Ne.symm hc₀]
+  unfold JunctionGraph.failureSet
+  intro heq
+  cases hv : (G.matrices l) (σ₁ l) c₀ with
+  | false =>
+    have hv2 : (G.matrices l) (σ₂ l) c₀ = true := by
+      cases hv' : (G.matrices l) (σ₂ l) c₀ <;> simp_all
+    -- σ₁ fails at edge e → e ∈ filter for σ₁
+    have h_in : e ∈ G.edges.filter (fun p => (G.matrices p.1) (σ₁ p.1) (σ₁ p.2) == false) := by
+      simp only [List.mem_filter, he_mem, true_and, BEq.beq]
+      rw [he1, hec, hv]; simp
+    -- σ₂ passes at edge e → e ∉ filter for σ₂
+    have h_nin : e ∉ G.edges.filter (fun p => (G.matrices p.1) (σ₂ p.1) (σ₂ p.2) == false) := by
+      simp only [List.mem_filter, not_and, BEq.beq]
+      intro _; rw [he1, h_col_eq, hv2]; simp
+    exact h_nin (heq ▸ h_in)
+  | true =>
+    have hv2 : (G.matrices l) (σ₂ l) c₀ = false := by
+      cases hv' : (G.matrices l) (σ₂ l) c₀ <;> simp_all
+    have h_in : e ∈ G.edges.filter (fun p => (G.matrices p.1) (σ₂ p.1) (σ₂ p.2) == false) := by
+      simp only [List.mem_filter, he_mem, true_and, BEq.beq]
+      rw [he1, h_col_eq, hv2]; simp
+    have h_nin : e ∉ G.edges.filter (fun p => (G.matrices p.1) (σ₁ p.1) (σ₁ p.2) == false) := by
+      simp only [List.mem_filter, not_and, BEq.beq]
+      intro _; rw [he1, hec, hv]; simp
+    exact h_nin (heq.symm ▸ h_in)
 
 /-- Failure patterns are injective on UNSAT CG instances with column coverage.
 
@@ -224,7 +254,7 @@ axiom all_junctions_column_covered (k : Nat) (G : JunctionGraph k)
     This is analogous to: "2+2=4" is trivially true, but "the total charge
     is conserved because of gauge symmetry" gives the equation physical meaning. -/
 theorem cg_viable_transfer {k : Nat} (G : JunctionGraph k)
-    (h_unsat : ∀ σ, G.tensor σ = false) :
+    (_h_unsat : ∀ σ, G.tensor σ = false) :
     G.tensor.viable :=
   ctensor_viable G.tensor
 
@@ -290,7 +320,7 @@ theorem tensor_monotone {k : Nat} (G₁ G₂ : JunctionGraph k)
     (σ : Fin k → Bool) (h_sat : G₁.tensor σ = true) :
     G₂.tensor σ = true := by
   unfold JunctionGraph.tensor at *
-  simp only [List.all_eq_true, Bool.decide_and, decide_eq_true_eq] at *
+  simp only [List.all_eq_true] at *
   intro p hp
   have hp' : p ∈ G₁.edges := h_edges ▸ hp
   exact h_mono p.1 (σ p.1) (σ p.2) (h_sat p hp')

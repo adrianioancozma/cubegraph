@@ -174,6 +174,74 @@ theorem cg_from_general {k n : Nat}
     S hS
 
 -- ============================================================
+-- Correlated AND Independent: the two directions
+-- ============================================================
+
+-- CORRELATED (within-instance): strings share compat entries.
+-- If σ₁(l) = σ₂(l), they read the SAME row at cube l.
+-- This creates an exponential web of dependencies.
+
+/-- Two strings sharing a gap at cube l read the same compat row there. -/
+theorem correlated_at_shared_cube {k n : Nat}
+    (compat : Fin k → Fin n → Fin n → Bool)
+    (σ₁ σ₂ : Fin k → Fin n) (l : Fin k) (h : σ₁ l = σ₂ l) :
+    ∀ g' : Fin n, compat l (σ₁ l) g' = compat l (σ₂ l) g' := by
+  intro g'; rw [h]
+
+-- INDEPENDENT (cross-instance): despite sharing data within an instance,
+-- each string can be the unique solution on a DIFFERENT instance.
+-- No subset of strings' statuses determines the rest.
+
+-- The tension: correlations make you think you can exploit shared data.
+-- Independence says: any exploitation fails on some instance.
+-- Together: exponential correlations with no exploitable structure.
+
+-- ============================================================
+-- Unique solution: σ can be the ONLY passing string
+-- (stronger than pairwise separability)
+-- ============================================================
+
+/-- Compat that accepts ONLY σ's gap at each cube.
+    uniqueCompat σ i g g' = true iff g = σ(i). -/
+def uniqueCompat (k n : Nat) (σ : Fin k → Fin n) :
+    Fin k → Fin n → Fin n → Bool :=
+  fun i g _ => if g = σ i then true else false
+
+/-- σ passes on its unique-solution instance. -/
+theorem uniqueCompat_passes {k n : Nat}
+    (edges : List (Fin k × Fin k))
+    (σ : Fin k → Fin n) :
+    (edges.all fun e => uniqueCompat k n σ e.1 (σ e.1) (σ e.2)) = true := by
+  rw [List.all_eq_true]; intro e _; simp [uniqueCompat]
+
+/-- Any τ ≠ σ fails on σ's unique-solution instance. -/
+theorem uniqueCompat_fails {k n : Nat}
+    (edges : List (Fin k × Fin k))
+    (h_edges : ∀ l : Fin k, ∃ e ∈ edges, e.1 = l)
+    (σ τ : Fin k → Fin n) (hne : σ ≠ τ) :
+    (edges.all fun e => uniqueCompat k n σ e.1 (τ e.1) (τ e.2)) = false := by
+  have ⟨l, hl⟩ : ∃ l, σ l ≠ τ l := by
+    by_contra h; push_neg at h; exact hne (funext h)
+  obtain ⟨e₀, he₀, hl₀⟩ := h_edges l
+  by_contra h; rw [Bool.not_eq_false] at h; rw [List.all_eq_true] at h
+  have h₀ := h e₀ he₀; simp only [uniqueCompat] at h₀
+  split at h₀ <;> simp_all
+
+/-- PROVEN: For any σ, there exists a CG-instance where σ is the UNIQUE
+    passing string. All τ ≠ σ fail simultaneously.
+    This is STRONGER than pairwise separability: σ vs ALL others at once.
+    No subset of strings' statuses determines σ's status. -/
+theorem unique_solution_exists {k n : Nat}
+    (edges : List (Fin k × Fin k))
+    (h_edges : ∀ l : Fin k, ∃ e ∈ edges, e.1 = l)
+    (σ : Fin k → Fin n) :
+    ∃ (compat : Fin k → Fin n → Fin n → Bool),
+      (edges.all fun e => compat e.1 (σ e.1) (σ e.2)) = true ∧
+      ∀ τ, σ ≠ τ → (edges.all fun e => compat e.1 (τ e.1) (τ e.2)) = false :=
+  ⟨uniqueCompat k n σ, uniqueCompat_passes edges σ,
+    fun τ hne => uniqueCompat_fails edges h_edges σ τ hne⟩
+
+-- ============================================================
 -- Shortcuts impossible: no boolean function derives T(σ₃) from T(σ₁), T(σ₂)
 -- ============================================================
 
